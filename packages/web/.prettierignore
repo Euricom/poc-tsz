@@ -1,0 +1,3 @@
+src/api/schema.ts
+src/routeTree.gen.ts
+package.json

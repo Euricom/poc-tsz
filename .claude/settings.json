@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git add:*)",
+      "Bash(git status:*)",
+      "Bash(git commit:*)",
+      "Bash(bun dev:*)",
+      "Bash(bun test:*)",
+      "Bash(bun check:*)",
+      "Bash(bun typecheck *)",
+      "WebFetch(domain:tanstack.com)",
+      "WebFetch(domain:github.com)"
+    ],
+    "deny": [
+      "Read(**/node_modules/**)",
+      "Read(**/dist/**)",
+      "Read(**/build/**)",
+      "Read(**/bin/**)",
+      "Read(**/obj/**)"
+    ]
+  }
+}

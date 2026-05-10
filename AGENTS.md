@@ -5,6 +5,7 @@ This is a monorepo with TypeScript and C#
 - The monorepo is powered by bun, do not use npm or pnpm
 - For C# conventions, see `docs/agents/conventions-csharp.md`
 - For TypeScript conventions, see `docs/agents/conventions-typescript.md`
+- When reporting information to me, be extremely concise and sacrifice grammar for the sake of concision.
 
 ## Agent skills
 

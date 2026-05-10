@@ -16,6 +16,7 @@
     "check": "bun run --filter '*' check",
     "fallow": "bun run --filter '*' fallow",
     "build:api": "dotnet build packages/api",
+    "test": "dotnet test packages/api.tests",
     "test:api": "dotnet test packages/api.tests",
     "test:api:int": "dotnet test packages/api.tests.integration",
     "gen:api": "bun run --filter 'web' gen:api",

@@ -3,6 +3,7 @@
 The main goal of this application is to provide a platform for time tracking and leave management for Euricom.
 So the main features are:
 
+- Login
 - Time Entry
 - Timesheets
 - Leave Overview
@@ -16,6 +17,15 @@ To manage the users and their settings you need:
 
 - Users (name, email, role, etc.)
 - User Settings (leave types, working hours, etc.)
+
+### Login
+
+- Login with Azure Entra ID
+- Login page with "Microsoft" login button
+- Single-tenant setup (Euricom)
+- One app registration shared by both frontend and API
+- User roles: Admin, User, Client Manager
+- Optional: Support for user role impersonation
 
 ### Time Entry
 

@@ -16,8 +16,11 @@ This is the first draft of the architecture, for the current architecture and fo
 - Form handling with [Tanstack Form](https://tanstack.com/form)
 - Unit testing with Vite+ (Vitest) + [@testing-library/react](https://testing-library.com/docs/react-testing-library/intro/) + jsdom
 - Linting & formatting via [vite-plus](https://www.npmjs.com/package/vite-plus) (`vp check`), which wraps OXLint + OXFmt
-- Authentication with Azure Entra ID with Authorization flow with PKCE (planned)
-- Auth library with [BetterAuth](https://better-auth.com/)
+- OAuth2 authentication
+  - Azure Entra ID
+  - One app registration shared by both frontend and API
+  - Token(s) are stored securely—either in encrypted cookies or server-side in the db
+  - Optional: Use [BetterAuth](https://better-auth.com/) as the authentication framework
 - API TS type generation with [openapi-ts.dev](https://openapi-ts.dev/)
 - Use Bun in favor of npm
 

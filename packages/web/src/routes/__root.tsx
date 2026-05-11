@@ -1,8 +1,7 @@
-import { HeadContent, Link, Outlet, Scripts, createRootRoute } from '@tanstack/react-router';
+import { HeadContent, Outlet, Scripts, createRootRoute } from '@tanstack/react-router';
 
 import appCss from '../styles.css?url';
 import { ErrorBoundary } from '#/components/error-boundary';
-import { ThemeToggle } from '#/components/theme-toggle';
 
 const themeInitScript = `(() => {
   try {
@@ -52,17 +51,6 @@ function RootDocument({ children }: { children: React.ReactNode }) {
 function RootLayout() {
   return (
     <div className="mx-auto max-w-3xl p-6">
-      <nav className="mb-6 flex items-center gap-4 text-sm">
-        <Link to="/" className="[&.active]:font-bold">
-          Home
-        </Link>
-        <Link to="/animals" className="[&.active]:font-bold">
-          Animals
-        </Link>
-        <div className="ml-auto">
-          <ThemeToggle />
-        </div>
-      </nav>
       <Outlet />
     </div>
   );

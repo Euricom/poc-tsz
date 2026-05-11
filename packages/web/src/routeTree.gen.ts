@@ -9,86 +9,153 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as IndexRouteImport } from './routes/index'
-import { Route as AnimalsIndexRouteImport } from './routes/animals/index'
-import { Route as AnimalsIdRouteImport } from './routes/animals/$id'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as AuthedRouteImport } from './routes/_authed'
+import { Route as AuthedIndexRouteImport } from './routes/_authed/index'
+import { Route as AuthedAnimalsIndexRouteImport } from './routes/_authed/animals/index'
+import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
+import { Route as AuthedAnimalsIdRouteImport } from './routes/_authed/animals/$id'
 
-const IndexRoute = IndexRouteImport.update({
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthedRoute = AuthedRouteImport.update({
+  id: '/_authed',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthedIndexRoute = AuthedIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthedRoute,
 } as any)
-const AnimalsIndexRoute = AnimalsIndexRouteImport.update({
+const AuthedAnimalsIndexRoute = AuthedAnimalsIndexRouteImport.update({
   id: '/animals/',
   path: '/animals/',
+  getParentRoute: () => AuthedRoute,
+} as any)
+const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
+  id: '/api/auth/$',
+  path: '/api/auth/$',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AnimalsIdRoute = AnimalsIdRouteImport.update({
+const AuthedAnimalsIdRoute = AuthedAnimalsIdRouteImport.update({
   id: '/animals/$id',
   path: '/animals/$id',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthedRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/animals/$id': typeof AnimalsIdRoute
-  '/animals/': typeof AnimalsIndexRoute
+  '/': typeof AuthedIndexRoute
+  '/login': typeof LoginRoute
+  '/animals/$id': typeof AuthedAnimalsIdRoute
+  '/api/auth/$': typeof ApiAuthSplatRoute
+  '/animals/': typeof AuthedAnimalsIndexRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/animals/$id': typeof AnimalsIdRoute
-  '/animals': typeof AnimalsIndexRoute
+  '/login': typeof LoginRoute
+  '/': typeof AuthedIndexRoute
+  '/animals/$id': typeof AuthedAnimalsIdRoute
+  '/api/auth/$': typeof ApiAuthSplatRoute
+  '/animals': typeof AuthedAnimalsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
-  '/animals/$id': typeof AnimalsIdRoute
-  '/animals/': typeof AnimalsIndexRoute
+  '/_authed': typeof AuthedRouteWithChildren
+  '/login': typeof LoginRoute
+  '/_authed/': typeof AuthedIndexRoute
+  '/_authed/animals/$id': typeof AuthedAnimalsIdRoute
+  '/api/auth/$': typeof ApiAuthSplatRoute
+  '/_authed/animals/': typeof AuthedAnimalsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/animals/$id' | '/animals/'
+  fullPaths: '/' | '/login' | '/animals/$id' | '/api/auth/$' | '/animals/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/animals/$id' | '/animals'
-  id: '__root__' | '/' | '/animals/$id' | '/animals/'
+  to: '/login' | '/' | '/animals/$id' | '/api/auth/$' | '/animals'
+  id:
+    | '__root__'
+    | '/_authed'
+    | '/login'
+    | '/_authed/'
+    | '/_authed/animals/$id'
+    | '/api/auth/$'
+    | '/_authed/animals/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  AnimalsIdRoute: typeof AnimalsIdRoute
-  AnimalsIndexRoute: typeof AnimalsIndexRoute
+  AuthedRoute: typeof AuthedRouteWithChildren
+  LoginRoute: typeof LoginRoute
+  ApiAuthSplatRoute: typeof ApiAuthSplatRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authed': {
+      id: '/_authed'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authed/': {
+      id: '/_authed/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AuthedIndexRouteImport
+      parentRoute: typeof AuthedRoute
     }
-    '/animals/': {
-      id: '/animals/'
+    '/_authed/animals/': {
+      id: '/_authed/animals/'
       path: '/animals'
       fullPath: '/animals/'
-      preLoaderRoute: typeof AnimalsIndexRouteImport
+      preLoaderRoute: typeof AuthedAnimalsIndexRouteImport
+      parentRoute: typeof AuthedRoute
+    }
+    '/api/auth/$': {
+      id: '/api/auth/$'
+      path: '/api/auth/$'
+      fullPath: '/api/auth/$'
+      preLoaderRoute: typeof ApiAuthSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/animals/$id': {
-      id: '/animals/$id'
+    '/_authed/animals/$id': {
+      id: '/_authed/animals/$id'
       path: '/animals/$id'
       fullPath: '/animals/$id'
-      preLoaderRoute: typeof AnimalsIdRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AuthedAnimalsIdRouteImport
+      parentRoute: typeof AuthedRoute
     }
   }
 }
 
+interface AuthedRouteChildren {
+  AuthedIndexRoute: typeof AuthedIndexRoute
+  AuthedAnimalsIdRoute: typeof AuthedAnimalsIdRoute
+  AuthedAnimalsIndexRoute: typeof AuthedAnimalsIndexRoute
+}
+
+const AuthedRouteChildren: AuthedRouteChildren = {
+  AuthedIndexRoute: AuthedIndexRoute,
+  AuthedAnimalsIdRoute: AuthedAnimalsIdRoute,
+  AuthedAnimalsIndexRoute: AuthedAnimalsIndexRoute,
+}
+
+const AuthedRouteWithChildren =
+  AuthedRoute._addFileChildren(AuthedRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
-  AnimalsIdRoute: AnimalsIdRoute,
-  AnimalsIndexRoute: AnimalsIndexRoute,
+  AuthedRoute: AuthedRouteWithChildren,
+  LoginRoute: LoginRoute,
+  ApiAuthSplatRoute: ApiAuthSplatRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

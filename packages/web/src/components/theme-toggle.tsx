@@ -1,26 +1,20 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Moon, Sun } from 'lucide-react';
 
 import { Button } from '#/components/ui/button';
-
-type Theme = 'light' | 'dark';
+import { readTheme, writeTheme, type Theme } from '#/lib/theme';
 
 export function ThemeToggle() {
-  const [theme, setTheme] = useState<Theme | null>(null);
-
-  useEffect(() => {
-    setTheme(document.documentElement.classList.contains('dark') ? 'dark' : 'light');
-  }, []);
+  const [theme, setTheme] = useState<Theme>(readTheme);
 
   function toggle() {
-    const next: Theme = document.documentElement.classList.contains('dark') ? 'light' : 'dark';
-    document.documentElement.classList.toggle('dark', next === 'dark');
-    localStorage.setItem('theme', next);
+    const next: Theme = theme === 'dark' ? 'light' : 'dark';
+    writeTheme(next);
     setTheme(next);
   }
 
   return (
-    <Button variant="ghost" size="icon-sm" onClick={toggle} aria-label="Toggle theme" suppressHydrationWarning>
+    <Button variant="ghost" size="icon-sm" onClick={toggle} aria-label="Toggle theme">
       {theme === 'dark' ? <Sun /> : <Moon />}
     </Button>
   );

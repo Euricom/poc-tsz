@@ -2,16 +2,7 @@ import { HeadContent, Outlet, Scripts, createRootRoute } from '@tanstack/react-r
 
 import appCss from '../styles.css?url';
 import { ErrorBoundary } from '#/components/error-boundary';
-
-const themeInitScript = `(() => {
-  try {
-    const stored = localStorage.getItem('theme');
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    if (stored === 'dark' || (!stored && prefersDark)) {
-      document.documentElement.classList.add('dark');
-    }
-  } catch {}
-})();`;
+import { readTheme } from '#/lib/theme';
 
 export const Route = createRootRoute({
   head: () => ({
@@ -34,11 +25,11 @@ export const Route = createRootRoute({
 });
 
 function RootDocument({ children }: { children: React.ReactNode }) {
+  const theme = readTheme();
   return (
-    <html lang="en">
+    <html lang="en" className={theme === 'dark' ? 'dark' : undefined}>
       <head>
         <HeadContent />
-        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
       </head>
       <body>
         {children}

@@ -2,6 +2,7 @@
 
 ## 2026-05-10
 
+- fix(web/theme): move theme to SSR-readable cookie; remove hydration mismatch on `<html>`
 - feat(web/auth): Microsoft OAuth2 login via better-auth (stateless cookies, guard layout, debug hooks)
 - test(api): add ValidationFilter unit tests and root `test` script
 - refactor(animals): extract AnimalForm and schema with unit tests

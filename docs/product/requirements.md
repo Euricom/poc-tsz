@@ -4,6 +4,7 @@ The main goal of this application is to provide a platform for time tracking and
 So the main features are:
 
 - Login
+
 - Time Entry
 - Timesheets
 - Leave Overview
@@ -18,12 +19,12 @@ To manage the users and their settings you need:
 - Users (name, email, role, etc.)
 - User Settings (leave types, working hours, etc.)
 
-### Login
+### Auth & Authorization
 
 - Login with Azure Entra ID
 - Login page with "Microsoft" login button
 - Single-tenant setup (Euricom)
-- One app registration shared by both frontend and API
+- One app registration shared by both frontend and API (or two app registrations; FE & API)
 - User roles: Admin, User, Client Manager
 - Optional: Support for user role impersonation
 
@@ -37,11 +38,14 @@ To manage the users and their settings you need:
 - You can select multiple tasks and leaves per week.
 - You can enter a time (00:15 - 8:00) for a task.
 - You can us following hot-keys (d: full day, h: half day, del: empty field)
-- The week-end and holidays are not editable
+- The week-end are not editable
 - A total time per task/leave is calculated
 - A total time per day and week is calculated
 - You can navigate to the previous and next week and choose a date in the calendar or 'today'
 - When navigating away from the time entry page or week is changed, the time entries are saved automatically
+
+**Prio 2:
+- The holidays are not editable
 - You can submit the week for approval (week will be marked as 'approved)
 
 **Out of Scope:**
@@ -57,14 +61,14 @@ To manage the users and their settings you need:
 - The timesheets are per month
 - You can navigate to the previous and next month or choose 'today'
 - Each entered time entry (task or leave) is displayed in the month overview
-- When a week-entry is approved, the color is highlighted (light green -> dark green)
-- A summary of the days per task is provided 
+- By clicking on a day-entry, the time entry page is opened for that week
 
 <img src="./images/user-timesheets.png" alt="Time Entry" width="600">
 
 **Prio 2:**
 
-- By clicking on a day-entry, the time entry page is opened for that week
+- A summary of the days per task is provided (when approved)
+- When a week-entry is approved, the color is highlighted (light green -> dark green)
 - Timesheets per task (customer): month view
 
 <img src="./images/user-timesheet.png" alt="Time Entry" width="600">
@@ -80,13 +84,13 @@ To manage the users and their settings you need:
 
 **Prio 1:**
 
-- A year overview of all taken leave days (navigate to previous and next year)
+- A year overview of all taken leave days 
 - A summary (see balance) of total leave days for the user for the year
 - Indication of the current date, weekend
+- When clicking on a day, the time entry page is opened for that week
 
 **Prio 2**
 - Indication of the school & work holidays (auto retrieved via https://www.openholidaysapi.org/en/)
-- When clicking on a day, the time entry page is opened for that week
 
 ### Settings
 
@@ -120,10 +124,10 @@ Fields:
 - customer ref
 - subject (typically project name, will be displayed in the time entry)
 - consultant ref (based on the user list)
-- task (name & rate, name is displayed in the time entry), eg: .NET Developer, €500/d
 - start & end date (only contract in date range can be selected in time entry)
 
 **Prio 2:**
+- task (name & rate, name is displayed in the time entry), eg: .NET Developer, €500/d
 - Client manager can be assigned to a contract
 
 **Contract list**
@@ -141,12 +145,12 @@ Fields:
 - Total leaves per year (holidy, sick leave, ancientiteit, adv days)
 - A leave can have following fields
   - Name
-  - Allowed/NotAllowed/Limited (when limited, you can specify the total days, when not allowed)
   - Total days
   - Taken days
   - Balance days
   - Year
 - When creating a new user, the total leaves per year is prefilled (leave: 20, adv: 5, ancientiteit: 0, sickness: 0)
+- Limited/Unlimited (when limited, you can specify the total days, when not allowed)
 
 **User list**
 
@@ -162,8 +166,3 @@ Fields:
 
 <img src="./images/admin-user-leave.png" alt="Settings" width="300">
 
-### Settings
-
-**Leave Types**
-
-<img src="./images/admin-leave-types.png" alt="Settings" width="600">

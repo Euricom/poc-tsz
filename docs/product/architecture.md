@@ -14,7 +14,7 @@ This is the first draft of the architecture, for the current architecture and fo
 - Styling with [Tailwindcss v4](https://tailwindcss.com/)
 - Components library with [shadcn](https://ui.shadcn.com/)
 - Form handling with [Tanstack Form](https://tanstack.com/form)
-- Unit testing with Vite+ (Vitest) + [@testing-library/react](https://testing-library.com/docs/react-testing-library/intro/) + jsdom
+- Unit testing with Vite+ (Vitest)
 - Linting & formatting via [vite-plus](https://www.npmjs.com/package/vite-plus) (`vp check`), which wraps OXLint + OXFmt
 - OAuth2 authentication
   - Azure Entra ID
@@ -64,9 +64,12 @@ react-app/                       # packages/web-tanstack-start
 - C# & .NET 10+
 - ASP.NET Core Web API: Minimal APIs for endpoints
 - Entity Framework Core for DB access
-- PostgreSQL (running on Docker) or SQLite as database 
+- SQLite as database 
 - Dependency Injection
 - OpenAPI enabled for documented API endpoints
+- Optional: CQRS Pattern
+- Optional: Unit of work
+- Optional: Repositories, ...
 
 **Global**
 - Monorepo using Bun workspaces for the web packages; .NET projects live next to them as standalone projects

@@ -1,5 +1,17 @@
 namespace Api.Modules.Animals;
 
+public static class AnimalSeederExtensions
+{
+    public static WebApplication EnsureAnimalDbSeeded(this WebApplication app)
+    {
+        using var scope = app.Services.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<AnimalDbContext>();
+        db.Database.EnsureCreated();
+        if (!db.Animals.Any()) new AnimalSeeder(db).Seed();
+        return app;
+    }
+}
+
 public class AnimalSeeder(AnimalDbContext context)
 {
     public void Seed()

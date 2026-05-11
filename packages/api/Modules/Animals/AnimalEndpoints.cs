@@ -8,7 +8,7 @@ public static class AnimalEndpoints
     public static void Map(WebApplication app)
     {
         var group = app.MapApiGroup("animals");
-        if (!app.Configuration.GetValue<bool>("Auth:Disabled"))
+        if (!app.Configuration.GetValue<bool>(AuthExtensions.DisabledKey))
             group.RequireAuthorization();
 
         group.MapGet("/", async (AnimalService service, CancellationToken ct) =>

@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-05-11
+
+- refactor(web/auth): move sessions/accounts/verification to shared SQLite at `<root>/db/tsz.db`; disable cookie cache to avoid 4-chunk session cookie
+- refactor(api): point EF Core at the shared `<root>/db/tsz.db` so the C# API and better-auth share one DB
+
 ## 2026-05-10
 
 - fix(web/theme): move theme to SSR-readable cookie; remove hydration mismatch on `<html>`

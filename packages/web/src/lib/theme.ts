@@ -5,8 +5,7 @@ export type Theme = 'light' | 'dark';
 const COOKIE_RE = /(?:^|;\s*)theme=(light|dark)/;
 
 export function readTheme(): Theme {
-  const cookie =
-    typeof document === 'undefined' ? (getRequest()?.headers.get('cookie') ?? '') : document.cookie;
+  const cookie = typeof document === 'undefined' ? (getRequest()?.headers.get('cookie') ?? '') : document.cookie;
   return COOKIE_RE.exec(cookie)?.[1] === 'dark' ? 'dark' : 'light';
 }
 

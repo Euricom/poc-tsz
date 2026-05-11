@@ -33,7 +33,7 @@ builder.Services.AddOpenApi(options =>
 builder.Services.AddDbContext<AnimalDbContext>(options =>
 {
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")
-           ?? "Data Source=animals.db");
+           ?? "Data Source=../../db/tsz.db");
 });
 builder.Services.AddScoped<AnimalService>();
 

@@ -47,7 +47,22 @@ src/
 
 ## Authentication
 
-OAuth2 with Microsoft (Entra ID) via [better-auth](https://www.better-auth.com/), running in **stateless mode** — no database. The session is signed/encrypted inside the cookie, OAuth state and account info also live in cookies (`storeStateStrategy: "cookie"`, `storeAccountCookie` defaults to `true` when no DB is configured).
+OAuth2 with Microsoft (Entra ID) via [better-auth](https://www.better-auth.com/). Sessions, accounts and verification rows persist to a **shared SQLite database** at `<repo-root>/db/tsz.db` — the same file the .NET API uses for `Animals`. The cookie carries only an opaque session id (with a 5-minute cookie-cache for performance).
+
+### Database setup (one-time)
+
+better-auth shares the SQLite file with the .NET API at `<repo-root>/db/tsz.db`.
+
+1. Start the API once (`bun run dev:api` from the repo root) so EF Core creates `db/tsz.db` with the `Animals` schema and seed data.
+2. From `packages/web`, run:
+   ```bash
+   bunx @better-auth/cli@latest migrate
+   ```
+   This adds the better-auth tables (`user`, `session`, `account`, `verification`) to the same file.
+
+Re-run step 2 after adding new better-auth plugins.
+
+If you're migrating from the previous setup, the old `packages/api/animals.db` is now orphan and can be removed: `rm packages/api/animals.db*`.
 
 ### Required env vars
 

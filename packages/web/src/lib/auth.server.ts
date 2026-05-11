@@ -1,5 +1,3 @@
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 import Database from 'better-sqlite3';
 import { betterAuth } from 'better-auth';
 import { createAuthMiddleware } from 'better-auth/api';
@@ -11,19 +9,10 @@ function ts() {
   return new Date().toISOString();
 }
 
-// Sessions, accounts and verification rows persist to the shared SQLite DB
-// at <repo-root>/db/tsz.db — the same file the .NET API uses for `Animals`.
-// Sharing the file lets the C# API later join domain rows to the better-auth
-// `user` table without a sync pipeline.
-const DEFAULT_DB_PATH = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../../db/tsz.db');
-const db = new Database(process.env.AUTH_DB_PATH ?? DEFAULT_DB_PATH);
-db.pragma('journal_mode = WAL');
-db.pragma('foreign_keys = ON');
-
 export const auth = betterAuth({
-  baseURL: process.env.BETTER_AUTH_URL ?? 'http://localhost:3000',
-  secret: process.env.BETTER_AUTH_SECRET,
-  database: db,
+  baseURL: process.env.APP_BASE_URL ?? 'http://localhost:3000',
+  secret: process.env.AUTH_COOKIE_SECRET,
+  database: new Database(process.env.AUTH_DB_PATH),
 
   logger: {
     level: 'debug',
@@ -36,8 +25,7 @@ export const auth = betterAuth({
     // Cookie cache disabled: Microsoft Graph hands back the profile photo
     // as a ~10KB base64 data URL in `user.image`, which would push the
     // signed cookie past the 4KB-per-cookie browser limit and chunk it
-    // into 4 parts. With WAL-mode SQLite, resolving the opaque session
-    // token against the DB on every request is cheap enough.
+    // into 4 parts. 
     cookieCache: { enabled: false },
   },
 

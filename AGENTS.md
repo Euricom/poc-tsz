@@ -6,6 +6,7 @@ This is a monorepo with TypeScript and C#
 - For C# conventions, see `docs/agents/conventions-csharp.md`
 - For TypeScript conventions, see `docs/agents/conventions-typescript.md`
 - When reporting information to me, be extremely concise and sacrifice grammar for the sake of concision.
+- Before committing, update the CHANGELOG.md file with the changes made. Use an outcome-oriented summary not the iteration steps.
 
 ## Agent skills
 

@@ -11,7 +11,7 @@
     "packages/*"
   ],
   "scripts": {
-    "dev": "bun run --filter 'web' dev",
+    "dev": "bun run --elide-lines 0 --filter 'web' dev",
     "dev:api": "dotnet watch run --project packages/api",
     "check": "bun run --filter '*' check",
     "fallow": "bun run --filter '*' fallow",

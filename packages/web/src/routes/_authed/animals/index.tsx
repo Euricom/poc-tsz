@@ -4,13 +4,18 @@ import { getAnimals, type AnimalDTO } from '#/api/animals';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '#/components/ui/table';
 
 const fetchAnimals = createServerFn({ method: 'GET' }).handler(async () => {
-  const animals = await getAnimals();
-  return animals ?? [];
+  return (await getAnimals()) ?? [];
 });
 
 export const Route = createFileRoute('/_authed/animals/')({
   loader: () => fetchAnimals(),
   component: Animals,
+  errorComponent: ({ error }) => (
+    <div>
+      <p>Failed to load animals.</p>
+      <pre>{error instanceof Error ? error.message : 'Unknown error'}</pre>
+    </div>
+  ),
 });
 
 function Animals() {

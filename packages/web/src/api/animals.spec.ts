@@ -3,6 +3,13 @@ import { ApiRequestError } from './client';
 import { getAnimals, getAnimalById, createAnimal, updateAnimal, removeAnimal } from './animals';
 import { emptyResponse, jsonResponse } from '@tests/fetch-util';
 
+vi.mock('@tanstack/react-start/server', () => ({
+  getRequest: () => new Request('http://test/'),
+}));
+vi.mock('#/lib/auth.server', () => ({
+  getAccessToken: async () => null,
+}));
+
 const mockFetch = vi.hoisted(() => {
   const mockFetch = vi.fn();
   globalThis.fetch = mockFetch as typeof fetch;

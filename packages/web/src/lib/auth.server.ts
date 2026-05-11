@@ -25,7 +25,7 @@ export const auth = betterAuth({
     // Cookie cache disabled: Microsoft Graph hands back the profile photo
     // as a ~10KB base64 data URL in `user.image`, which would push the
     // signed cookie past the 4KB-per-cookie browser limit and chunk it
-    // into 4 parts. 
+    // into 4 parts.
     cookieCache: { enabled: false },
   },
 
@@ -35,6 +35,8 @@ export const auth = betterAuth({
       clientSecret: process.env.AUTH_CLIENT_SECRET!,
       tenantId: process.env.AUTH_TENANT_ID,
       prompt: 'select_account',
+      disableDefaultScope: true,
+      scope: ['openid', 'profile', 'email', 'offline_access', `api://${process.env.AUTH_CLIENT_ID}/api`],
     },
   },
 
@@ -54,3 +56,11 @@ export const auth = betterAuth({
 
   plugins: [tanstackStartCookies()],
 });
+
+export async function getAccessToken(headers: Headers): Promise<string | null> {
+  const res = await auth.api.getAccessToken({
+    body: { providerId: 'microsoft' },
+    headers,
+  });
+  return res?.accessToken ?? null;
+}

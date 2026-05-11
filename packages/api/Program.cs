@@ -1,11 +1,38 @@
 using System.Reflection;
 using System.Text.Json.Serialization;
 using Api.Modules.Animals;
+using DotNetEnv;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
 using Scalar.AspNetCore;
 
+Env.TraversePath().Load();
+
 var builder = WebApplication.CreateBuilder(args);
+
+var authDisabled = builder.Configuration.GetValue<bool>("Auth:Disabled");
+if (!authDisabled)
+{
+    var tenantId = builder.Configuration["AzureAd:TenantId"]
+        ?? throw new InvalidOperationException("AzureAd:TenantId is missing");
+    var clientId = builder.Configuration["AzureAd:ClientId"]
+        ?? throw new InvalidOperationException("AzureAd:ClientId is missing");
+
+    builder.Services
+        .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+        .AddJwtBearer(o =>
+        {
+            o.Authority = $"https://login.microsoftonline.com/{tenantId}/v2.0";
+            o.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidAudiences = new[] { $"api://{clientId}" },
+                ValidIssuers   = new[] { $"https://sts.windows.net/{tenantId}/" },
+            };
+        });
+    builder.Services.AddAuthorization();
+}
 
 builder.Services.ConfigureHttpJsonOptions(options =>
 {
@@ -48,6 +75,16 @@ using (var scope = app.Services.CreateScope())
 
 
 // app.UseHttpsRedirection();
+if (!authDisabled)
+{
+    app.UseAuthentication();
+    app.UseAuthorization();
+}
+else
+{
+    app.Logger.LogWarning("Auth:Disabled=true — API is unauthenticated. Do not run this in any shared env.");
+}
+
 app.MapOpenApi("/openapi/{documentName}.json");
 app.MapScalarApiReference("/openapi", options =>
 {

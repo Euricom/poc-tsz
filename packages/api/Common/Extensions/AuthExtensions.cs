@@ -11,10 +11,10 @@ public static class AuthExtensions
     {
         if (builder.Configuration.GetValue<bool>(DisabledKey)) return builder;
 
-        var tenantId = builder.Configuration["AzureAd:TenantId"]
-            ?? throw new InvalidOperationException("AzureAd:TenantId is missing");
-        var clientId = builder.Configuration["AzureAd:ClientId"]
-            ?? throw new InvalidOperationException("AzureAd:ClientId is missing");
+        var tenantId = builder.Configuration["Auth:TenantId"]
+            ?? throw new InvalidOperationException("Auth:TenantId is missing");
+        var clientId = builder.Configuration["Auth:ClientId"]
+            ?? throw new InvalidOperationException("Auth:ClientId is missing");
 
         builder.Services
             .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

@@ -45,7 +45,7 @@ Then run it from the repo root:
 bun run dev:api
 ```
 
-The `__` in env-var names is the ASP.NET section separator: `AzureAd__TenantId` maps to the `AzureAd:TenantId` configuration key. Use the same convention for any nested settings.
+The `__` in env-var names is the ASP.NET section separator: `Auth__TenantId` maps to the `Auth:TenantId` configuration key. Use the same convention for any nested settings.
 
 #### Bypass auth for local testing
 

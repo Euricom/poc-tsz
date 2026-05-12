@@ -19,6 +19,7 @@ public class AnimalEndpointsTests : IClassFixture<WebApplicationFactory<Program>
         _testFactory = factory.WithWebHostBuilder(builder =>
         {
             builder.UseSetting("Auth:Disabled", "true");
+            builder.UseSetting("App:DatabaseUrl", "Data Source=:memory:");
             builder.ConfigureServices(services =>
             {
                 // Remove all descriptors related to AnimalDbContext so we can replace with InMemory

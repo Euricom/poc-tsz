@@ -12,7 +12,7 @@ function ts() {
 export const auth = betterAuth({
   baseURL: process.env.APP_BASE_URL ?? 'http://localhost:3000',
   secret: process.env.AUTH_COOKIE_SECRET,
-  database: new Database(process.env.AUTH_DB_PATH),
+  database: new Database(process.env.AUTH_DB_URL?.replace(/^file:/, '')),
 
   logger: {
     level: 'debug',

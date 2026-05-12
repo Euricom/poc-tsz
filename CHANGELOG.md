@@ -2,7 +2,10 @@
 
 ## 2026-05-12
 
+- refactor(api): move DB config to env-driven `App__DatabaseUrl` with universal `DatabaseUrl.ToSqliteConnectionString` converter (accepts `file:`, `sqlite:`, bare paths, and native `Data Source=...` connection strings)
+- refactor(api): rename auth config prefix `AzureAd:` → `Auth:` for consistency with `Auth:Disabled`
 - chore(web/auth): rename requested API scope from `api` to `access_as_user` (Microsoft delegated-scope convention); requires matching rename in the Entra app registration
+- chore(web/auth): rename `AUTH_DB_PATH` → `AUTH_DB_URL` (Prisma-style `file:` URL convention)
 
 ## 2026-05-11
 

@@ -14,8 +14,10 @@ builder.AddEntraJwtAuth();
 builder.Services.ConfigureHttpJsonOptions(o =>
     o.SerializerOptions.NumberHandling = JsonNumberHandling.Strict);
 builder.Services.AddOpenApiWithRequiredNonNullable();
+var databaseUrl = builder.Configuration["App:DatabaseUrl"]
+    ?? throw new InvalidOperationException("App:DatabaseUrl is missing");
 builder.Services.AddDbContext<AnimalDbContext>(o =>
-    o.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+    o.UseSqlite(DatabaseUrl.ToSqliteConnectionString(databaseUrl)));
 builder.Services.AddScoped<AnimalService>();
 
 var app = builder.Build();

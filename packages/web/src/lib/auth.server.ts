@@ -36,7 +36,7 @@ export const auth = betterAuth({
       tenantId: process.env.AUTH_TENANT_ID,
       prompt: 'select_account',
       disableDefaultScope: true,
-      scope: ['openid', 'profile', 'email', 'offline_access', `api://${process.env.AUTH_CLIENT_ID}/api`],
+      scope: ['openid', 'profile', 'email', 'offline_access', `api://${process.env.AUTH_CLIENT_ID}/access_as_user`],
     },
   },
 

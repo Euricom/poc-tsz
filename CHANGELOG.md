@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-05-12
+
+- chore(web/auth): rename requested API scope from `api` to `access_as_user` (Microsoft delegated-scope convention); requires matching rename in the Entra app registration
+
 ## 2026-05-11
 
 - refactor(api): slim `Program.cs` by extracting JWT auth, OpenAPI schema, and DB seed into `Common/Extensions` + module helpers

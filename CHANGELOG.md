@@ -2,7 +2,6 @@
 
 ## 2026-05-13
 
-- docs(plans): add verification plan covering test levels, pre-merge gates, per-area catalog, and slice exit criteria
 - docs(plans): trim high-level plan back to delivery overview — drop phase-by-phase detail and pre-merge checklist, keep the 8-slice list
 - docs(plans): add high-level implementation plan for TSZ app (domain model, REST API, FE layout, 8-slice delivery order, risks)
 - refactor(web/auth): replace better-auth with Auth.js (`@auth/core`); sessions are now stateless JWE cookies, removing the shared SQLite dependency and the one-time `better-auth migrate` step from the web app

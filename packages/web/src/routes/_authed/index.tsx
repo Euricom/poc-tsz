@@ -1,27 +1,20 @@
-import { createFileRoute, useRouter } from '@tanstack/react-router';
+import { createFileRoute } from '@tanstack/react-router';
 import { Button } from '#/components/ui/button';
 import { signOut, useSession } from '#/lib/auth-client';
 
 export const Route = createFileRoute('/_authed/')({ component: Home });
 
 function Home() {
-  const router = useRouter();
   const { data, isPending } = useSession();
   const user = data?.user;
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     console.log('[home] logout clicked');
-    signOut({
-      fetchOptions: {
-        onSuccess: () => {
-          console.log('[home] sign-out succeeded → /login');
-          router.navigate({ to: '/login' });
-        },
-        onError: (ctx) => {
-          console.error('[home] sign-out failed', ctx.error);
-        },
-      },
-    });
+    try {
+      await signOut('/login');
+    } catch (err) {
+      console.error('[home] sign-out failed', err);
+    }
   };
 
   return (

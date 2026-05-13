@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-05-13
+
+- refactor(web/auth): replace better-auth with Auth.js (`@auth/core`); sessions are now stateless JWE cookies, removing the shared SQLite dependency and the one-time `better-auth migrate` step from the web app
+- chore(web/auth): rename `AUTH_COOKIE_SECRET` → `AUTH_SECRET`, drop `AUTH_DB_URL`; Azure redirect URI moves from `/api/auth/callback/microsoft` to `/api/auth/callback/microsoft-entra-id`
+
 ## 2026-05-12
 
 - refactor(api): move DB config to env-driven `App__DatabaseUrl` with universal `DatabaseUrl.ToSqliteConnectionString` converter (accepts `file:`, `sqlite:`, bare paths, and native `Data Source=...` connection strings)

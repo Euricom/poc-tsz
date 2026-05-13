@@ -2,13 +2,13 @@ import { createFileRoute, redirect } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
 import { getRequest } from '@tanstack/react-start/server';
 import { Button } from '#/components/ui/button';
-import { auth } from '#/lib/auth.server';
-import { signIn } from '#/lib/auth-client';
+import { getServerSession as getServerSessionImpl } from '#/lib/auth.server';
+import { signInWithMicrosoft } from '#/lib/auth-client';
 
 const getServerSession = createServerFn({ method: 'GET' }).handler(async () => {
   const request = getRequest();
   if (!request) return null;
-  return auth.api.getSession({ headers: request.headers });
+  return getServerSessionImpl(request.headers);
 });
 
 export const Route = createFileRoute('/login')({
@@ -25,10 +25,7 @@ export const Route = createFileRoute('/login')({
 function LoginPage() {
   const handleClick = () => {
     console.log('[login] sign-in clicked → microsoft');
-    signIn.social({
-      provider: 'microsoft',
-      callbackURL: '/',
-    });
+    void signInWithMicrosoft('/');
   };
 
   return (

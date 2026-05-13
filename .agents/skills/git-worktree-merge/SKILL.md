@@ -68,7 +68,25 @@ Then branch on tree state:
 
 - **Clean tree, branch ahead of `origin/$MAIN`** → proceed to Phase 2.
 - **Clean tree, no commits beyond `origin/$MAIN`** → stop and tell the user there is nothing to merge.
-- **Uncommitted changes** → **stop**. Show the user `git status` output and ask them to commit (or stash) the changes themselves before re-invoking `/git-worktree-merge`. Do not run `git add`, `git commit`, or `git stash` on their behalf.
+- **Uncommitted changes** → **stop**. Do not run `git add`, `git commit`, or `git stash` on their behalf. Present a friendly summary instead of raw `git status` output:
+
+  1. Run `git status --porcelain` and `git diff --stat HEAD` to gather the change set.
+  2. Render a changelog-style list grouped by intent (added / modified / deleted / untracked), one bullet per file with a short human-readable hint about what the change is. Infer the hint from the file path and diff (e.g. `plans/high-level-plan.md` → "new high-level implementation plan").
+  3. Close with a single next step: commit the changes, then re-run `/git-worktree-merge`.
+
+  Example shape:
+
+  ```
+  Cannot merge yet — this worktree has uncommitted work.
+
+  Changes to commit:
+  • Added    plans/high-level-plan.md   — new high-level implementation plan
+  • Modified src/foo.ts                  — wire up the new planner entrypoint
+
+  Please commit these changes, then re-run /git-worktree-merge.
+  ```
+
+  Keep it concise — no raw porcelain dump, no multi-paragraph explanation.
 
 ## Phase 2 — Merge into the default branch (operating on the primary worktree)
 

@@ -95,102 +95,22 @@ State / data: TanStack Query for mutations, loaders for read-only first paint; T
   - Web vitest for hooks (`useWeekTotals`, autosave debounce); optional Playwright smoke for the time-entry round-trip.
 - **Tooling**: `vp check` on web, `dotnet format` on api. After API changes run `bun run gen:api`.
 
-## 6. Phased delivery
+## 6. Delivery order (vertical slices)
 
-Each phase is a vertical slice landed on its own worktree branch and merged into `master`. Per-phase rhythm:
+Each slice = DB migration → API endpoints → TS schema regen → FE route + tests → CHANGELOG entry.
 
-1. EF migration (`dotnet ef migrations add <Name> -p packages/api`).
-2. Endpoints + service + contracts + validators (mirror `Modules/Animals` shape).
-3. `bun run gen:api` to refresh `packages/web/src/api/schema.ts`.
-4. FE route(s) + feature folder + zod forms.
-5. Unit + integration tests, `vp check`, `dotnet format`, `dotnet test`.
-6. Update `CHANGELOG.md` (outcome-oriented); open an ADR if a real decision was made.
+1. **Foundation** — `TszDbContext`, `CurrentUserAccessor`, role middleware, `/api/me`; replace `Animals` seeder/module wiring; expand `_authed` shell with role-aware nav.
+2. **Admin: LeaveTypes + Users** (incl. allowance subresource); seeds.
+3. **Admin: Customers** — CRUD.
+4. **Admin: Contracts** — CRUD + consultant/date filter endpoint.
+5. **Time Entry (Prio-1)** — week endpoints, grid, hotkeys, autosave. Largest slice.
+6. **Timesheets (Prio-1)** — month aggregate + click-through to week.
+7. **Leave Overview (Prio-1)** — year aggregate + balance summary card.
+8. **Polish & Prio-2 backlog** — week submit/approval, holidays cache, client-manager assignment, per-task rate, impersonation.
 
-ADRs to capture along the way: single-DbContext choice, weekKey format, autosave strategy, Entra-oid ↔ User mapping, role claim shape.
+Capture ADRs (`docs/adr/`) for: single-DbContext choice, weekKey format, autosave strategy, Entra-oid ↔ User mapping rule.
 
-### Phase 0 — Bootstrap & cleanup (no user-visible feature)
-- Add `TszDbContext` alongside `AnimalDbContext`; copy registration in `Program.cs`.
-- Introduce `Common/CurrentUserAccessor.cs` reading `oid` from `HttpContext.User`; register scoped.
-- Add `RequireRoleAttribute` / endpoint filter driven by `User.role`.
-- Replace `EnsureAnimalDbSeeded` with `TszSeeder` (LeaveTypes + dev admin from `DEV_ADMIN_OID`).
-- `/api/me` returning `{ user, role, allowances }` (allowances empty until Phase 2).
-- FE: loader at `_authed.tsx` calls `/api/me`, stashes in router context; role-aware nav stub.
-- Keep `Animals` module live; remove only after Phase 2 has a parallel CRUD landed.
-- Exit: dev login lands on empty shell; `GET /api/me` returns the seeded admin.
-
-### Phase 1 — Admin: Leave Types
-- Entity `LeaveType` + EF config + migration; seeder writes the 5 defaults idempotently.
-- `LeaveTypesEndpoints` CRUD behind `RequireRole("Admin")`.
-- FE `features/admin-leave-types/` list + edit dialog; route `admin/leave-types`.
-- Exit: admin can edit `isLimited` and default total; seeds visible.
-
-### Phase 2 — Admin: Users + allowances
-- Entities `User`, `UserLeaveAllowance` + migration; unique index on `entraObjectId`.
-- Endpoints: `Users` CRUD; nested `GET/PUT /api/users/{id}/allowances?year=`.
-- On user create: prefill current-year allowances from `LeaveType` defaults.
-- Auto-provision: first `/api/me` for an unknown `oid` inserts a `User(role=User)`.
-- FE `features/admin-users/`: list, detail with allowance editor (year selector).
-- Retire `Animals` module + migration + FE route here.
-- Exit: admin can promote a user; allowances editable per year; new logins auto-provision.
-
-### Phase 3 — Admin: Customers
-- Entity + migration with owned `Address` value object.
-- CRUD endpoints, list filter on `name` / `number`.
-- FE `features/admin-customers/`: list + form (TanStack Form + zod).
-- Exit: customer list paginates + searches by name.
-
-### Phase 4 — Admin: Contracts
-- Entity + migration; FKs to Customer + consultant User.
-- CRUD endpoints + filter `GET /api/contracts?consultantId=&date=` returning active contracts for that date.
-- FE `features/admin-contracts/`: list grouped by customer; form picks customer + consultant.
-- Exit: contracts searchable; filter endpoint returns the correct slice for arbitrary dates.
-
-### Phase 5 — Time Entry (largest slice)
-- Entity `TimeEntry` + migration; check constraint `(contractId IS NULL) <> (leaveTypeId IS NULL)`; index `(userId, date)`.
-- `GET /api/time-entries?userId=&weekKey=` (defaults to current user; admin override).
-- `PUT /api/time-entries/week`: full-week batch upsert; per-cell `15..480`; rejects Sat/Sun; returns new `weekVersion` ETag.
-- Server invariants: contract must be active for `date` and assigned to `userId`; for limited leave types, warn (don't block) on over-allowance in Prio-1.
-- FE `features/time-entry/`:
-  - `WeekGrid` (7 cols, totals row + column); Sat/Sun muted + read-only.
-  - `RowPicker` combobox sourced from `/contracts?consultantId=me&date=weekStart` + `/leave-types`.
-  - Hotkeys `d`=480, `h`=240, `del`=clear; arrow keys move focus.
-  - `useWeekAutosave`: 500 ms debounce; flushes on blur, route-leave, week-change; sends `If-Match: weekVersion`.
-  - Route `time-entry/$week.tsx`; `current` segment resolves to today's ISO week.
-- Tests: week-upsert idempotency, ETag conflict, totals + hotkey hooks (vitest), Playwright happy path.
-- Exit: user fills a week, refreshes, sees the same data; concurrent tab gets `412`.
-
-### Phase 6 — Timesheets
-- Endpoint `GET /api/time-entries?userId=&from=&to=` returning per-day + per-contract sums.
-- FE `features/timesheets/MonthView`: month grid; click a day → `/time-entry/$week`.
-- Server loader for first paint; TanStack Query refresh after mutation.
-- Exit: month totals match underlying entries; navigation round-trips.
-
-### Phase 7 — Leave Overview
-- Reuse the date-range aggregate, group by `leaveTypeId`.
-- FE `features/leave/`: `YearGrid` (12×31 heatmap) + `BalanceCard` (used vs allowance per limited type).
-- Exit: year view shows accurate balance; over-allowance renders a warning chip.
-
-### Phase 8 — Hardening & Prio-2 backlog
-Each item is its own worktree slice:
-- WeekSubmission + `POST /api/weeks/{weekKey}/submit`; "Submitted" lock in the grid.
-- Approver flow (ClientManager role on contracts).
-- Holidays cache (background fetch from openholidaysapi, table + DI service).
-- Per-task rate / day-rate on Contract; surface in admin form + timesheet export.
-- Admin role impersonation (header `X-Act-As-User-Id` + audit log).
-- SQLite → Postgres swap (connection string + EF provider, container compose).
-
-## 7. Cross-phase checklist
-
-Before merging any phase branch:
-- [ ] `bun run gen:api` committed when API contracts changed.
-- [ ] `dotnet test` + `bun run test` green.
-- [ ] `vp check` (web) and `dotnet format --verify-no-changes` clean.
-- [ ] Migration is reversible (smoke `dotnet ef database update <prev>` locally).
-- [ ] `CHANGELOG.md` updated (outcome, not steps).
-- [ ] ADR added if a non-obvious decision was made.
-- [ ] Worktree merged via the `git-worktree-merge` skill; branch + worktree removed.
-
-## 8. Risks & open questions
+## 7. Risks & open questions
 
 - **Token refresh**: Entra access tokens ~1h; Auth.js `jwt` callback already has a refresh path in `auth.server.ts` — needs an integration test before long admin sessions are common.
 - **User provisioning**: bootstrap rule for Entra `oid` ↔ `User` row. Recommend auto-create as `role=User` on first `/api/me`, with Admin promotion via UI.

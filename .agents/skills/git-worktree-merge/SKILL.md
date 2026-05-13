@@ -149,11 +149,11 @@ Use rebase only when rewriting branch history is acceptable.
 
 ## Decision guide
 
-| Situation                             | Best option                                                |
-| ------------------------------------- | ---------------------------------------------------------- |
-| Normal Claude Code worktree task      | `--no-ff` merge from primary (default flow above)          |
-| Small personal branch, linear history | Rebase variant                                             |
-| Experimental detached worktree        | Create a real branch first (see below), then merge         |
+| Situation                             | Best option                                        |
+| ------------------------------------- | -------------------------------------------------- |
+| Normal Claude Code worktree task      | `--no-ff` merge from primary (default flow above)  |
+| Small personal branch, linear history | Rebase variant                                     |
+| Experimental detached worktree        | Create a real branch first (see below), then merge |
 
 ## Universal rules
 

@@ -23,9 +23,9 @@ Introduce a user management module mirroring the existing Animal module pattern:
 9. As an admin, I want the system to compute and display each row's `BalanceDays` (`Total − Taken`), so that I don't have to do math.
 10. As an admin, I want unlimited leave rows (e.g. sick leave) to omit `TotalDays` and `BalanceDays` in the UI, so that the form does not show meaningless numbers.
 11. As an admin, I want a separate page for managing the catalog of leave types, so that I can curate the categories without touching individual users.
-12. As an admin, I want to define a leave type with a name, an Allowed mode (Limited / Unlimited), and a default total days, so that future users get the right starting point.
+12. As an admin, I want to define a leave type with a name, an Allowed mode (Limited / Unlimited), a default total days, and a color, so that future users get the right starting point and the type is visually distinguishable in the UI.
 13. As an admin, I want every existing user to automatically gain a new leave row for the current year when I add a new leave type, so that I don't have to manually visit every user.
-14. As an admin, I want to edit a leave type's name, Allowed mode, and default total days, so that I can correct or evolve the catalog.
+14. As an admin, I want to edit a leave type's name, Allowed mode, default total days, and color, so that I can correct or evolve the catalog.
 15. As an admin, I want editing a leave type's default total days to *not* rewrite existing user allocations, so that historical data is preserved.
 16. As an admin, I want to archive a leave type instead of deleting it, so that existing user rows referencing it remain intact.
 17. As an admin, I want archived leave types to still appear (clearly marked) on existing users' leave lists and remain editable, so that I can continue to record taken days through the rest of the year.
@@ -47,10 +47,10 @@ Introduce a user management module mirroring the existing Animal module pattern:
 Three entities are introduced (see `CONTEXT.md` for canonical definitions):
 
 - **User** — `Id`, `Name` (single free-text string), `Email` (unique, case-insensitive), `Role` enum (`Admin | User | ClientManager`). Email max length 200, name max 100. **`User.Role` is application data only and does not gate any endpoint today.**
-- **LeaveType** — `Id`, `Name` (unique among non-archived, case-insensitive), `Allowed` enum (`Limited | Unlimited`), `DefaultTotalDays` (nullable int; `null` when Unlimited), `IsArchived` (bool, default false).
+- **LeaveType** — `Id`, `Name` (unique among non-archived, case-insensitive), `Allowed` enum (`Limited | Unlimited`), `DefaultTotalDays` (nullable int; `null` when Unlimited), `Color` (7-character hex string, e.g. `#3B82F6`; required), `IsArchived` (bool, default false).
 - **UserLeave** — `Id`, `UserId` (FK → `User`), `LeaveTypeId` (FK → `LeaveType`), `Year`, `TotalDays` (nullable int; `null` when the referenced type is Unlimited), `TakenDays` (int, default 0). Unique on `(UserId, LeaveTypeId, Year)`.
 
-`BalanceDays` and the `Name` / `Allowed` of a `UserLeave` are **derived in the response DTO**, not stored.
+`BalanceDays` and the `Name` / `Allowed` / `Color` of a `UserLeave` are **derived in the response DTO** (projected from the `LeaveType` relationship), not stored.
 
 ### Module layout
 
@@ -75,7 +75,7 @@ The endpoint files are intentionally thin (HTTP plumbing only) and not deep modu
 
 - **Create user** is atomic: the user row and the backfilled leaves commit together in a single `SaveChangesAsync`. If backfill fails, the user is not persisted.
 - **Backfill on LeaveType create** writes one `UserLeave` per existing user, `Year = DateTime.UtcNow.Year`, `TotalDays = LeaveType.DefaultTotalDays`, `TakenDays = 0`.
-- **Edit LeaveType** updates only the type's own row; it must not touch any existing `UserLeave`. (Future backfills will use the new defaults.)
+- **Edit LeaveType** updates only the type's own row (`Name` / `Allowed` / `DefaultTotalDays` / `Color`); it must not touch any existing `UserLeave`. (Future backfills will use the new defaults. `Color` and `Name` propagate to existing rows via the relationship — they are not denormalized.)
 - **Delete LeaveType** sets `IsArchived = true`. The catalog list endpoint excludes archived types by default; an `includeArchived=true` query string flips that. The endpoint never hard-deletes.
 - **`User.Name`** is a single free-text field. The richer name model (First/Last/Nickname/...) and the multi-role checkbox model from the requirements doc are explicitly **out of scope**.
 
@@ -93,17 +93,17 @@ PUT    /api/users/{id}/leaves/{leaveId}      → UserLeave                   (To
 
 GET    /api/leave-types?includeArchived=...  → LeaveType[]                 (default excludes archived)
 POST   /api/leave-types                      → LeaveType                   (Created; backfills UserLeaves for all users for current year)
-PUT    /api/leave-types/{id}                 → LeaveType                   (Name / Allowed / DefaultTotalDays)
+PUT    /api/leave-types/{id}                 → LeaveType                   (Name / Allowed / DefaultTotalDays / Color)
 DELETE /api/leave-types/{id}                 → NoContent                   (soft-delete: sets IsArchived)
 ```
 
-The `User` and `UserLeave` response DTOs project `Name` and `Allowed` from the `LeaveType` relationship and compute `BalanceDays`. Validation uses the same `ValidationFilter<T>` pattern that Animals uses; range/length attributes live on the request DTOs.
+The `User` and `UserLeave` response DTOs project `Name`, `Allowed`, and `Color` from the `LeaveType` relationship and compute `BalanceDays`. Validation uses the same `ValidationFilter<T>` pattern that Animals uses; range/length attributes live on the request DTOs. `Color` is validated as a 7-character `#RRGGBB` hex string (regex), required on create.
 
 After the C# endpoints land, the frontend's typed client is refreshed with `bun run gen:api` (required step per `packages/api/CLAUDE.md`).
 
 ### Seeding
 
-- **LeaveTypes** are seeded on first DB creation when the table is empty: `Verlof` (Limited, 20), `ADV` (Limited, 5), `Anciënniteit` (Limited, 0), `Ziekte` (Unlimited).
+- **LeaveTypes** are seeded on first DB creation when the table is empty: `Verlof` (Limited, 20, `#3B82F6`), `ADV` (Limited, 5, `#10B981`), `Anciënniteit` (Limited, 0, `#8B5CF6`), `Ziekte` (Unlimited, `#EF4444`).
 - **Users** are *not* seeded. The list view starts empty.
 
 ### Frontend layout
@@ -112,7 +112,7 @@ A new `/admin` segment is added under the existing `_authed/` layout:
 
 - `routes/_authed/admin/users/index.tsx` — list view (DataTable, Add button).
 - `routes/_authed/admin/users/$id.tsx` — edit page (form + leaves table with per-row edit modal).
-- `routes/_authed/admin/leave-types/index.tsx` — catalog list with add/edit/archive (and toggle to show archived).
+- `routes/_authed/admin/leave-types/index.tsx` — catalog list with add/edit/archive (and toggle to show archived). The list renders each row's `Color` as a swatch alongside the name; the add/edit form has a color input (native `<input type="color">` plus a hex text field) wired to the Zod schema.
 - Co-located `-components/` folders hold the user form, the leave-edit modal, the leave-type form, and their schemas — mirroring the Animals layout.
 - API client modules: `src/api/users.ts` and `src/api/leave-types.ts`, using the generated client.
 

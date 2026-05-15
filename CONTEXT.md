@@ -9,11 +9,11 @@ A category of paid or unpaid time off (e.g. holiday, sick, ADV) that a user can 
 _Avoid_: Leaf, holiday (when used generically), absence.
 
 **LeaveType**:
-A globally-defined leave category in the admin catalog. Has a `Name`, an `Allowed` mode (Limited or Unlimited), and a `DefaultTotalDays` used as the prefill for new users.
+A globally-defined leave category in the admin catalog. Has a `Name`, an `Allowed` mode (Limited or Unlimited), a `DefaultTotalDays` used as the prefill for new users, and a `Color` used by UI surfaces to visually distinguish categories.
 _Avoid_: LeaveCategory, LeaveKind.
 
 **UserLeave**:
-A user's allocation of a specific `LeaveType` for a specific year. Owns the editable totals (`TotalDays`, `TakenDays`); reads its `Name` and `Allowed` through its `LeaveType`.
+A user's allocation of a specific `LeaveType` for a specific year. Owns the editable totals (`TotalDays`, `TakenDays`); reads its `Name`, `Allowed`, and `Color` through its `LeaveType`.
 _Avoid_: UserLeaveAllocation, LeaveEntry (which would suggest a time-entry record, not a yearly bucket).
 
 **Allowed**:
@@ -25,6 +25,9 @@ On a `UserLeave`: `TotalDays` is the cap (nullable; `null` when the type is Unli
 
 **Archived (LeaveType)**:
 A `LeaveType` marked `IsArchived = true` is hidden from the admin catalog's "active" view and is not used in backfills, but existing `UserLeave` rows pointing to it remain visible and editable on the user form.
+
+**Color (LeaveType)**:
+A 7-character hex color string on `LeaveType` (e.g. `#3B82F6`). Required, set by the admin on create and editable on update. Used by UI surfaces (catalog list, future calendar / timesheet views) to visually distinguish categories. Read through the relationship on every `UserLeave` — not denormalized.
 
 **Role (User)**:
 Application-level enum on `User` with values `Admin`, `User`, `ClientManager`. **Data only** — not currently wired to authorization (no claim mapping). Any authenticated Entra user can call every endpoint today.

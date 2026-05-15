@@ -21,5 +21,17 @@
   },
   "env": {
     "ENABLE_TOOL_SEARCH": "auto"
+  },
+  "hooks": {
+    "WorktreeCreate": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd \"${tool_output.worktreePath}\" && bun install && dotnet restore"
+          }
+        ]
+      }
+    ]
   }
 }

@@ -2,6 +2,7 @@
 
 ## 2026-05-15
 
+- docs(user-mgmt): add PRD for user management (User + LeaveType catalog + per-user-per-year UserLeave with backfill), repo-root `CONTEXT.md` glossary, and ADR 0001 capturing the global-catalog-vs-free-text-name decision
 - docs(agents): add codebase map to root `AGENTS.md` listing every important folder with a one-line description (including a nested breakdown of `packages/web/src`)
 - chore(agents): fix `git-worktree-merge` skill frontmatter — replace unsupported `invocation: user-only` with `disable-model-invocation: true`
 - feat(web): add reusable `DataTable<T>` component on top of `@tanstack/react-table` with controlled multi-column sort (`name,-age` string format, compatible with `sort-on`), single/multi row selection, row-click handler, loading skeleton and empty state; refactor `/animals` route to sort via `sort-on`

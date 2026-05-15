@@ -3,6 +3,8 @@ using System.Text.Json.Serialization;
 using Api.Common.Extensions;
 using Api.Modules.Animals;
 using DotNetEnv;
+using Microsoft.AspNetCore.Hosting.Server;
+using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 
@@ -36,5 +38,25 @@ app.MapGet("/", () => new
 });
 
 AnimalEndpoints.Map(app);
+
+app.Lifetime.ApplicationStarted.Register(() =>
+{
+    var addresses = app.Services.GetRequiredService<IServer>()
+        .Features.Get<IServerAddressesFeature>()?.Addresses;
+    if (addresses is null || addresses.Count == 0) return;
+
+    var useColor = Environment.GetEnvironmentVariable("NO_COLOR") is null
+        && !Console.IsOutputRedirected;
+    var dim = useColor ? "\x1b[2m" : "";
+    var ok = useColor ? "\x1b[1;32m" : "";
+    var rst = useColor ? "\x1b[0m" : "";
+
+    Console.WriteLine();
+    Console.WriteLine($"{dim}──────────────────────────────────────────{rst}");
+    foreach (var url in addresses)
+        Console.WriteLine($"  {ok}API{rst} : {ok}{url}{rst}");
+    Console.WriteLine($"{dim}──────────────────────────────────────────{rst}");
+    Console.WriteLine();
+});
 
 app.Run();

@@ -2,6 +2,7 @@
 
 ## 2026-05-15
 
+- docs(user-mgmt): put slice 04 (UserLeave row editing) on hold — moved from `ready-for-agent` to `needs-triage` pending maintainer approval
 - docs(user-mgmt): add `Color` to the `LeaveType` catalog (7-char hex, required) across ADR 0001, `CONTEXT.md`, the PRD, and slice 01 — UI surfaces project the color through the `LeaveType` relationship; seeded defaults get concrete hex values; admin form gains a color picker
 - docs(user-mgmt): add PRD for user management (User + LeaveType catalog + per-user-per-year UserLeave with backfill), repo-root `CONTEXT.md` glossary, and ADR 0001 capturing the global-catalog-vs-free-text-name decision
 - docs(agents): add codebase map to root `AGENTS.md` listing every important folder with a one-line description (including a nested breakdown of `packages/web/src`)

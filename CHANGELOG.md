@@ -2,6 +2,9 @@
 
 ## 2026-05-15
 
+- docs(agents): add codebase map to root `AGENTS.md` listing every important folder with a one-line description (including a nested breakdown of `packages/web/src`)
+- build(web): add `@tanstack/react-table` dependency
+- chore: ignore Claude Code `worktrees/` directories in `.gitignore`
 - feat(dev): add `scripts/start.sh` launcher that runs web + api together with auto-assigned ports (web 3000-3005, api random 5200-5999) and forwards `SERVER_URL` to the web process
 - feat(api): print API URL banner on startup so it surfaces in the dev launcher output
 - chore(agents): add `start-app` skill that runs the launcher via a Monitor task and reports the Web/API URLs

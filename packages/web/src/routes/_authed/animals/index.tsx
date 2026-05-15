@@ -43,7 +43,7 @@ const columns = [
 function Animals() {
   const animals = Route.useLoaderData();
   const navigate = useNavigate();
-  const [sort, setSort] = useState<string>('');
+  const [sort, setSort] = useState<string>('name');
 
   const sortedAnimals = sortOn(animals, sort);
 

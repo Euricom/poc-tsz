@@ -3,7 +3,7 @@
 ## 2026-05-15
 
 - docs(agents): add codebase map to root `AGENTS.md` listing every important folder with a one-line description (including a nested breakdown of `packages/web/src`)
-- build(web): add `@tanstack/react-table` dependency
+- feat(web): add reusable `DataTable<T>` component on top of `@tanstack/react-table` with controlled multi-column sort (`name,-age` string format, compatible with `sort-on`), single/multi row selection, row-click handler, loading skeleton and empty state; refactor `/animals` route to sort via `sort-on`
 - chore: ignore Claude Code `worktrees/` directories in `.gitignore`
 - feat(dev): add `scripts/start.sh` launcher that runs web + api together with auto-assigned ports (web 3000-3005, api random 5200-5999) and forwards `SERVER_URL` to the web process
 - feat(api): print API URL banner on startup so it surfaces in the dev launcher output

@@ -1,0 +1,45 @@
+# 04 — UserLeave row editing
+
+Status: ready-for-agent
+
+## Parent
+
+`.scratch/user-management/PRD.md`
+
+## What to build
+
+Allow admins to correct allocations and record taken days on a single `UserLeave` row from the user edit page.
+
+Backend:
+
+- New `UserLeaveService` (deep module) with a single update method that changes only `TotalDays` and `TakenDays` on a row. The absence of "add" and "remove" methods is part of the service's public contract — there is no other way new leaves enter or leave a user.
+- The service returns a not-found-style result when the addressed row does not belong to the given user; the endpoint maps that to `404`.
+- Year and FKs are never modified by this path.
+- Endpoint, `RequireAuthorization()`:
+  - `PUT /api/users/{id}/leaves/{leaveId}` → updated `UserLeave`.
+
+Frontend:
+
+- The leaves table on `/admin/users/{id}` (added in slice 03) gains a per-row "Update leave" action that opens a modal.
+- The modal edits `TotalDays` and `TakenDays`:
+  - For Unlimited rows the `TotalDays` input is hidden; only `TakenDays` is editable.
+  - Archived `LeaveType` rows are editable through the same modal (the archived hint stays visible).
+- After submit the row's display reflects the new `TotalDays` / `TakenDays` / `BalanceDays` without a full page reload.
+- Co-located Zod schema for the modal's form. Reuses the typed client from `src/api/users.ts`.
+- Run `bun run gen:api` after the backend lands.
+
+## Acceptance criteria
+
+- [ ] `PUT /api/users/{id}/leaves/{leaveId}` updates only `TotalDays` and `TakenDays`; `Year`, `UserId`, `LeaveTypeId`, and `Id` are unchanged.
+- [ ] Calling the endpoint with a `leaveId` that does not belong to the given user returns `404`.
+- [ ] `UserLeaveService` exposes no add/remove methods.
+- [ ] The endpoint rejects anonymous requests when `Auth:Disabled` is not set.
+- [ ] Unit tests cover: happy-path update touches only the two fields; mismatched-user returns the not-found result; service has no add/remove API (contract test).
+- [ ] Integration tests cover: `PUT /api/users/{id}/leaves/{leaveId}` reflected on a subsequent `GET /api/users/{id}`.
+- [ ] Frontend per-row "Update leave" modal updates the row in place; Unlimited rows hide `TotalDays`; archived rows are still editable; co-located Zod schema + spec exist.
+- [ ] `bun run gen:api` has been run.
+- [ ] `CHANGELOG.md` updated.
+
+## Blocked by
+
+- `.scratch/user-management/issues/03-user-edit-delete-leaves-display.md`

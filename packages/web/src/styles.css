@@ -1,6 +1,15 @@
 @import 'tailwindcss';
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300..800;1,300..800&display=swap');
 
 @custom-variant dark (&:is(.dark *));
+
+@theme {
+  --color-euri-green: #00ff00;
+  --color-euri-charcoal: #1d252d;
+  --color-euri-deep: #141a20;
+  --color-euri-midnight: #014046;
+  --font-display: 'Montserrat', 'Helvetica Neue', Arial, system-ui, sans-serif;
+}
 
 @theme inline {
   --color-background: var(--background);

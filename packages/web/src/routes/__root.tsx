@@ -40,9 +40,5 @@ function RootDocument({ children }: { children: React.ReactNode }) {
 }
 
 function RootLayout() {
-  return (
-    <div className="mx-auto max-w-3xl p-6">
-      <Outlet />
-    </div>
-  );
+  return <Outlet />;
 }

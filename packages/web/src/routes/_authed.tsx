@@ -30,7 +30,7 @@ export const Route = createFileRoute('/_authed')({
 
 function AuthedLayout() {
   return (
-    <>
+    <div className="mx-auto max-w-3xl p-6">
       <nav className="mb-6 flex items-center gap-4 text-sm">
         <Link to="/" className="[&.active]:font-bold">
           Home
@@ -43,6 +43,6 @@ function AuthedLayout() {
         </div>
       </nav>
       <Outlet />
-    </>
+    </div>
   );
 }

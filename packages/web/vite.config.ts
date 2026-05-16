@@ -20,7 +20,7 @@ const config = defineConfig({
   test: {
     setupFiles: ['./tests/setup.ts'],
   },
-  plugins: [devtools(), tailwindcss(), tanstackStart(), viteReact()],
+  plugins: [tailwindcss(), devtools(), tanstackStart(), viteReact()],
 });
 
 export default config;

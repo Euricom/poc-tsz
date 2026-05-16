@@ -2,6 +2,7 @@
 
 ## 2026-05-16
 
+- fix(web): unbreak redesigned login — move Montserrat `@import url(...)` above `@import 'tailwindcss'` in `styles.css` (tailwind's expansion pushed it past line 1400, violating PostCSS's "@import must precede other statements"), and place `@tanstack/devtools-vite` directly before `tanstackStart()` in `vite.config.ts` plugins (any plugin between them caused `data-tsd-source` line numbers to diverge between SSR and CSR, producing a hydration mismatch on every route)
 - docs(design): add Euricom design system spec at `docs/product/design/DESIGN.md` — color tokens (deep teal `#014046` + electric lime `#00FF00`), Montserrat typography scale, and component patterns for use when building UI
 
 ## 2026-05-15

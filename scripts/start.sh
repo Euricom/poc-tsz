@@ -66,6 +66,19 @@ printf '  %sWeb%s : %shttp://localhost:%s%s\n' "$C_OK" "$C_RST" "$C_OK" "$WEB_PO
 printf '  %sAPI%s : %shttp://localhost:%s%s\n' "$C_OK" "$C_RST" "$C_OK" "$API_PORT" "$C_RST"
 printf '%s──────────────────────────────────────────%s\n' "$C_DIM" "$C_RST"
 
+if [[ -n "${TMUX:-}" ]]; then
+  trap - EXIT INT TERM
+  API_CMD="ASPNETCORE_URLS=http://localhost:$API_PORT dotnet watch run --project packages/api --no-launch-profile --non-interactive"
+  WEB_CMD="SERVER_URL=http://localhost:$API_PORT bunx vite --port $WEB_PORT --strictPort"
+
+  WIN_ID="$(tmux new-window -P -F '#{window_id}' -n tsz -c "$REPO_ROOT/packages/web" "$WEB_CMD")"
+  tmux split-window -v -t "$WIN_ID" -c "$REPO_ROOT" "$API_CMD"
+  tmux select-pane -t "${WIN_ID}.0"
+
+  printf '  %s→ launched in tmux window %s (web top, api bottom)%s\n' "$C_OK" "$WIN_ID" "$C_RST"
+  exit 0
+fi
+
 (
   ASPNETCORE_URLS="http://localhost:$API_PORT" \
     dotnet watch run --project packages/api --no-launch-profile --non-interactive 2>&1 \

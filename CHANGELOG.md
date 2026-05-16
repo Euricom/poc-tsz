@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-05-16
+
+- docs(design): add Euricom design system spec at `docs/product/design/DESIGN.md` — color tokens (deep teal `#014046` + electric lime `#00FF00`), Montserrat typography scale, and component patterns for use when building UI
+
 ## 2026-05-15
 
 - docs(user-mgmt): put slice 04 (UserLeave row editing) on hold — moved from `ready-for-agent` to `needs-triage` pending maintainer approval

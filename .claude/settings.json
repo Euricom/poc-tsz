@@ -16,7 +16,10 @@
       "Read(**/dist/**)",
       "Read(**/build/**)",
       "Read(**/bin/**)",
-      "Read(**/obj/**)"
+      "Read(**/obj/**)",
+      "Bash(cat .env:*)", 
+      "Edit(**/.env)", 
+      "Write(**/.env)"
     ]
   },
   "env": {
@@ -32,6 +35,10 @@
           }
         ]
       }
-    ]
+    ],
+    "PostToolUse": [{
+      "matcher": "Edit|Write",
+      "hooks": [{ "type": "command", "command": "cd packages/web && out=$(bun check 2>&1) || echo \"$out\"" }]
+    }]
   }
 }

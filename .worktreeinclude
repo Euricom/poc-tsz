@@ -1,0 +1,4 @@
+./node_modules
+./packages/web/.env
+./packages/web/node_modules
+./packages/api/.env

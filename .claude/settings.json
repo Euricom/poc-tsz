@@ -28,7 +28,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "cd \"${tool_output.worktreePath}\" && bun install && dotnet restore"
+            "command": "bash -lc 'set -e; NAME=$(jq -r .name); ROOT=$(git rev-parse --show-toplevel); DIR=\"$ROOT/.claude/worktrees/$NAME\"; git worktree add -b \"worktree-$NAME\" \"$DIR\" origin/HEAD >&2 || git worktree add \"$DIR\" \"worktree-$NAME\" >&2; cd \"$DIR\"; [ -f package.json ] && bun install >&2 || true; echo \"$DIR\"'"
           }
         ]
       }

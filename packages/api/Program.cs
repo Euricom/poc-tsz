@@ -2,6 +2,7 @@ using System.Reflection;
 using System.Text.Json.Serialization;
 using Api.Common.Extensions;
 using Api.Modules.Animals;
+using Api.Modules.LeaveTypes;
 using DotNetEnv;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Hosting.Server.Features;
@@ -14,7 +15,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.AddEntraJwtAuth();
 builder.Services.ConfigureHttpJsonOptions(o =>
-    o.SerializerOptions.NumberHandling = JsonNumberHandling.Strict);
+{
+    o.SerializerOptions.NumberHandling = JsonNumberHandling.Strict;
+    o.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
+});
 builder.Services.AddOpenApiWithRequiredNonNullable();
 var databaseUrl = builder.Configuration["App:DatabaseUrl"]
     ?? throw new InvalidOperationException("App:DatabaseUrl is missing");
@@ -22,8 +26,15 @@ builder.Services.AddDbContext<AnimalDbContext>(o =>
     o.UseSqlite(DatabaseUrl.ToSqliteConnectionString(databaseUrl)));
 builder.Services.AddScoped<AnimalService>();
 
+builder.Services.AddDbContext<UsersDbContext>(o =>
+    o.UseSqlite(DatabaseUrl.ToSqliteConnectionString(databaseUrl),
+        x => x.MigrationsHistoryTable("__EFMigrationsHistory_Users")
+               .MigrationsAssembly("api")));
+builder.Services.AddScoped<LeaveTypeService>();
+
 var app = builder.Build();
 app.EnsureAnimalDbSeeded();
+app.EnsureUsersDbSeeded();
 app.UseEntraJwtAuth();
 
 // OpenAPI Spec
@@ -38,6 +49,7 @@ app.MapGet("/", () => new
 });
 
 AnimalEndpoints.Map(app);
+LeaveTypeEndpoints.Map(app);
 
 app.Lifetime.ApplicationStarted.Register(() =>
 {

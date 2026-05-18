@@ -15,6 +15,7 @@ import { Route as AuthedIndexRouteImport } from './routes/_authed/index'
 import { Route as AuthedAnimalsIndexRouteImport } from './routes/_authed/animals/index'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 import { Route as AuthedAnimalsIdRouteImport } from './routes/_authed/animals/$id'
+import { Route as AuthedAdminLeaveTypesIndexRouteImport } from './routes/_authed/admin/leave-types/index'
 
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
@@ -45,6 +46,12 @@ const AuthedAnimalsIdRoute = AuthedAnimalsIdRouteImport.update({
   path: '/animals/$id',
   getParentRoute: () => AuthedRoute,
 } as any)
+const AuthedAdminLeaveTypesIndexRoute =
+  AuthedAdminLeaveTypesIndexRouteImport.update({
+    id: '/admin/leave-types/',
+    path: '/admin/leave-types/',
+    getParentRoute: () => AuthedRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AuthedIndexRoute
@@ -52,6 +59,7 @@ export interface FileRoutesByFullPath {
   '/animals/$id': typeof AuthedAnimalsIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/animals/': typeof AuthedAnimalsIndexRoute
+  '/admin/leave-types/': typeof AuthedAdminLeaveTypesIndexRoute
 }
 export interface FileRoutesByTo {
   '/login': typeof LoginRoute
@@ -59,6 +67,7 @@ export interface FileRoutesByTo {
   '/animals/$id': typeof AuthedAnimalsIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/animals': typeof AuthedAnimalsIndexRoute
+  '/admin/leave-types': typeof AuthedAdminLeaveTypesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -68,12 +77,25 @@ export interface FileRoutesById {
   '/_authed/animals/$id': typeof AuthedAnimalsIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/_authed/animals/': typeof AuthedAnimalsIndexRoute
+  '/_authed/admin/leave-types/': typeof AuthedAdminLeaveTypesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/login' | '/animals/$id' | '/api/auth/$' | '/animals/'
+  fullPaths:
+    | '/'
+    | '/login'
+    | '/animals/$id'
+    | '/api/auth/$'
+    | '/animals/'
+    | '/admin/leave-types/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/login' | '/' | '/animals/$id' | '/api/auth/$' | '/animals'
+  to:
+    | '/login'
+    | '/'
+    | '/animals/$id'
+    | '/api/auth/$'
+    | '/animals'
+    | '/admin/leave-types'
   id:
     | '__root__'
     | '/_authed'
@@ -82,6 +104,7 @@ export interface FileRouteTypes {
     | '/_authed/animals/$id'
     | '/api/auth/$'
     | '/_authed/animals/'
+    | '/_authed/admin/leave-types/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -134,6 +157,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthedAnimalsIdRouteImport
       parentRoute: typeof AuthedRoute
     }
+    '/_authed/admin/leave-types/': {
+      id: '/_authed/admin/leave-types/'
+      path: '/admin/leave-types'
+      fullPath: '/admin/leave-types/'
+      preLoaderRoute: typeof AuthedAdminLeaveTypesIndexRouteImport
+      parentRoute: typeof AuthedRoute
+    }
   }
 }
 
@@ -141,12 +171,14 @@ interface AuthedRouteChildren {
   AuthedIndexRoute: typeof AuthedIndexRoute
   AuthedAnimalsIdRoute: typeof AuthedAnimalsIdRoute
   AuthedAnimalsIndexRoute: typeof AuthedAnimalsIndexRoute
+  AuthedAdminLeaveTypesIndexRoute: typeof AuthedAdminLeaveTypesIndexRoute
 }
 
 const AuthedRouteChildren: AuthedRouteChildren = {
   AuthedIndexRoute: AuthedIndexRoute,
   AuthedAnimalsIdRoute: AuthedAnimalsIdRoute,
   AuthedAnimalsIndexRoute: AuthedAnimalsIndexRoute,
+  AuthedAdminLeaveTypesIndexRoute: AuthedAdminLeaveTypesIndexRoute,
 }
 
 const AuthedRouteWithChildren =

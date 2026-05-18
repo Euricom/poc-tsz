@@ -1,6 +1,6 @@
 # 01 — LeaveType catalog: full CRUD + seeder
 
-Status: ready-for-agent
+Status: done
 
 ## Parent
 

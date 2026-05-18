@@ -2,6 +2,8 @@
 
 ## 2026-05-16
 
+- feat(user-mgmt): implement LeaveType catalog (slice 01) — admins can list, create, edit, and archive leave types at `/admin/leave-types`; each type carries a name, Limited/Unlimited mode, optional day quota, and a hex color shown as a swatch in the table; soft-delete (archive) never hard-deletes rows; `UsersDbContext` runs migrations into `__EFMigrationsHistory_Users` and seeds four defaults (Verlof 20d, ADV 5d, Anciënniteit 0d, Ziekte unlimited) on first run; case-insensitive name uniqueness enforced by a SQLite `COLLATE NOCASE` filtered index and checked at the service layer with a 409 response; 9 unit tests and 12 integration tests covering all CRUD paths, auth boundary, soft-delete, and filtering by archived state; frontend add/edit modal with color picker (native + hex text input kept in sync) and show-archived toggle
+
 - docs(design): add Euricom design system spec at `docs/product/design/DESIGN.md` — color tokens (deep teal `#014046` + electric lime `#00FF00`), Montserrat typography scale, and component patterns for use when building UI
 
 ## 2026-05-15

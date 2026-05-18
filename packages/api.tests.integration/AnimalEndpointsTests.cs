@@ -1,6 +1,7 @@
 using System.Net;
 using System.Net.Http.Json;
 using Api.Modules.Animals;
+using Api.Modules.LeaveTypes;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
@@ -22,18 +23,22 @@ public class AnimalEndpointsTests : IClassFixture<WebApplicationFactory<Program>
             builder.UseSetting("App:DatabaseUrl", "Data Source=:memory:");
             builder.ConfigureServices(services =>
             {
-                // Remove all descriptors related to AnimalDbContext so we can replace with InMemory
                 var toRemove = services
                     .Where(d =>
                         d.ServiceType == typeof(DbContextOptions<AnimalDbContext>) ||
                         d.ServiceType == typeof(IDbContextOptionsConfiguration<AnimalDbContext>) ||
-                        d.ServiceType == typeof(AnimalDbContext))
+                        d.ServiceType == typeof(AnimalDbContext) ||
+                        d.ServiceType == typeof(DbContextOptions<UsersDbContext>) ||
+                        d.ServiceType == typeof(IDbContextOptionsConfiguration<UsersDbContext>) ||
+                        d.ServiceType == typeof(UsersDbContext))
                     .ToList();
                 foreach (var d in toRemove)
                     services.Remove(d);
 
                 services.AddDbContext<AnimalDbContext>(options =>
-                    options.UseInMemoryDatabase("IntegrationTests_" + guid));
+                    options.UseInMemoryDatabase("IntegrationTests_Animals_" + guid));
+                services.AddDbContext<UsersDbContext>(options =>
+                    options.UseInMemoryDatabase("IntegrationTests_Users_" + guid));
             });
         });
         _client = _testFactory.CreateClient();

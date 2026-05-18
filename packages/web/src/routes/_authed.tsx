@@ -38,6 +38,9 @@ function AuthedLayout() {
         <Link to="/animals" className="[&.active]:font-bold">
           Animals
         </Link>
+        <Link to="/admin/leave-types" className="[&.active]:font-bold">
+          Leave Types
+        </Link>
         <div className="ml-auto">
           <ThemeToggle />
         </div>

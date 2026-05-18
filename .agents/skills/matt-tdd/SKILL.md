@@ -13,7 +13,25 @@ description: Test-driven development with red-green-refactor loop. Use when user
 
 **Bad tests** are coupled to implementation. They mock internal collaborators, test private methods, or verify through external means (like querying a database directly instead of using the interface). The warning sign: your test breaks when you refactor, but behavior hasn't changed. If you rename an internal function and tests fail, those tests were testing implementation, not behavior.
 
-See [tests.md](tests.md) for examples and [mocking.md](mocking.md) for mocking guidelines.
+## Language guides
+
+Examples live in `typescript/` and `csharp/`. Pick the folder matching the code you're touching.
+
+### TypeScript — `packages/web/`
+
+Framework: Vitest.
+
+- [typescript/tests.md](typescript/tests.md) — good vs bad tests
+- [typescript/mocking.md](typescript/mocking.md) — when and how to mock
+- [typescript/interface-design.md](typescript/interface-design.md) — designing for testability
+
+### C# — `packages/api/*`
+
+Framework: xUnit + NSubstitute. Constructor injection at the class level.
+
+- [csharp/tests.md](csharp/tests.md) — good vs bad tests, naming (Given/When/Then), xUnit practices
+- [csharp/mocking.md](csharp/mocking.md) — when and how to mock
+- [csharp/interface-design.md](csharp/interface-design.md) — designing for testability
 
 ## Anti-Pattern: Horizontal Slices
 
@@ -51,7 +69,7 @@ Before writing any code:
 - [ ] Confirm with user what interface changes are needed
 - [ ] Confirm with user which behaviors to test (prioritize)
 - [ ] Identify opportunities for [deep modules](deep-modules.md) (small interface, deep implementation)
-- [ ] Design interfaces for [testability](interface-design.md)
+- [ ] Design interfaces for testability — TypeScript: [typescript/interface-design.md](typescript/interface-design.md) · C#: [csharp/interface-design.md](csharp/interface-design.md)
 - [ ] List the behaviors to test (not implementation steps)
 - [ ] Get user approval on the plan
 

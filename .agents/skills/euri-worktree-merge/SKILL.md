@@ -1,5 +1,5 @@
 ---
-name: git-worktree-merge
+name: worktree-merge
 description: "Merge a Claude Code worktree branch back into the repo's default branch (`main` or `master`) from the primary worktree, using `ExitWorktree` to remove the linked worktree at the end."
 argument-hint: "[strategy] — one of: merge | rebase. Optional second arg: --keep-branch to skip deleting the branch after merge."
 disable-model-invocation: true

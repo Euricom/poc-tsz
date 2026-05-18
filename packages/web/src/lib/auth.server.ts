@@ -4,14 +4,10 @@ import MicrosoftEntraID from '@auth/core/providers/microsoft-entra-id';
 import { env } from '#/env';
 
 const LOG_PREFIX = '[auth]';
-const TENANT_ID = env.AUTH_TENANT_ID;
-const CLIENT_ID = env.AUTH_CLIENT_ID;
-const CLIENT_SECRET = env.AUTH_CLIENT_SECRET;
-const SECRET = env.AUTH_SECRET;
 
 const useSecureCookies = env.APP_BASE_URL.startsWith('https://');
 const COOKIE_NAME = useSecureCookies ? '__Secure-authjs.session-token' : 'authjs.session-token';
-const SCOPE = `openid profile email offline_access api://${CLIENT_ID}/access_as_user`;
+const SCOPE = `openid profile email offline_access api://${env.AUTH_CLIENT_ID}/access_as_user`;
 
 function ts() {
   return new Date().toISOString();
@@ -32,12 +28,12 @@ async function refreshAccessToken(refreshToken: string): Promise<{
   refresh_token: string;
   expires_at: number;
 }> {
-  const res = await fetch(`https://login.microsoftonline.com/${TENANT_ID}/oauth2/v2.0/token`, {
+  const res = await fetch(`https://login.microsoftonline.com/${env.AUTH_TENANT_ID}/oauth2/v2.0/token`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     body: new URLSearchParams({
-      client_id: CLIENT_ID,
-      client_secret: CLIENT_SECRET,
+      client_id: env.AUTH_CLIENT_ID,
+      client_secret: env.AUTH_CLIENT_SECRET,
       grant_type: 'refresh_token',
       refresh_token: refreshToken,
       scope: SCOPE,
@@ -53,16 +49,16 @@ async function refreshAccessToken(refreshToken: string): Promise<{
 }
 
 export const authConfig: AuthConfig = {
-  secret: SECRET,
+  secret: env.AUTH_SECRET,
   trustHost: true,
   basePath: '/api/auth',
   useSecureCookies,
   session: { strategy: 'jwt' },
   providers: [
     MicrosoftEntraID({
-      clientId: CLIENT_ID,
-      clientSecret: CLIENT_SECRET,
-      issuer: `https://login.microsoftonline.com/${TENANT_ID}/v2.0`,
+      clientId: env.AUTH_CLIENT_ID,
+      clientSecret: env.AUTH_CLIENT_SECRET,
+      issuer: `https://login.microsoftonline.com/${env.AUTH_TENANT_ID}/v2.0`,
       authorization: { params: { scope: SCOPE, prompt: 'select_account' } },
       // Override default profile() to skip the Graph /me/photos call.
       // Default fetches a 48×48 photo and base64-embeds it (~10KB) into
@@ -147,7 +143,7 @@ async function readToken(headers: Headers): Promise<AuthToken | null> {
   const req = new Request('http://x', { headers });
   const token = (await getToken({
     req,
-    secret: SECRET,
+    secret: env.AUTH_SECRET,
     salt: COOKIE_NAME,
   })) as AuthToken | null;
   return token;

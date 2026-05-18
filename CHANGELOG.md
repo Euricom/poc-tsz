@@ -2,7 +2,7 @@
 
 ## 2026-05-18
 
-- refactor(web): centralize env vars in `src/env.ts` — Zod schema validates `SERVER_URL`, `APP_BASE_URL`, `AUTH_TENANT_ID`, `AUTH_CLIENT_ID`, `AUTH_CLIENT_SECRET`, `AUTH_SECRET` at startup; `auth.server.ts` and `api/client.ts` replaced all `process.env.*` references with typed `env.*` imports
+- refactor(web): centralize env vars in `src/env.ts` — Zod schema validates `SERVER_URL`, `APP_BASE_URL`, `AUTH_TENANT_ID`, `AUTH_CLIENT_ID`, `AUTH_CLIENT_SECRET`, `AUTH_SECRET` at startup; `auth.server.ts` and `api/client.ts` replaced all `process.env.*` references with typed `env.*` imports; removed intermediate constant aliases in `auth.server.ts` so `env.*` is used directly at each call site
 
 ## 2026-05-16
 

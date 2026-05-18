@@ -3,6 +3,7 @@ import { createIsomorphicFn } from '@tanstack/react-start';
 import { getRequest } from '@tanstack/react-start/server';
 import { type paths } from './schema';
 import { getAccessToken } from '#/lib/auth.server';
+import { env } from '#/env';
 
 export class ApiRequestError extends Error {
   constructor(public status: number) {
@@ -33,6 +34,6 @@ export const errorMiddleware: Middleware = {
   },
 };
 
-export const client = createClient<paths>({ baseUrl: process.env.SERVER_URL });
+export const client = createClient<paths>({ baseUrl: env.SERVER_URL });
 client.use(authMiddleware);
 client.use(errorMiddleware);

@@ -1,14 +1,15 @@
 import { Auth, type AuthConfig } from '@auth/core';
 import { getToken } from '@auth/core/jwt';
 import MicrosoftEntraID from '@auth/core/providers/microsoft-entra-id';
+import { env } from '#/env';
 
 const LOG_PREFIX = '[auth]';
-const TENANT_ID = process.env.AUTH_TENANT_ID;
-const CLIENT_ID = process.env.AUTH_CLIENT_ID!;
-const CLIENT_SECRET = process.env.AUTH_CLIENT_SECRET!;
-const SECRET = process.env.AUTH_SECRET!;
+const TENANT_ID = env.AUTH_TENANT_ID;
+const CLIENT_ID = env.AUTH_CLIENT_ID;
+const CLIENT_SECRET = env.AUTH_CLIENT_SECRET;
+const SECRET = env.AUTH_SECRET;
 
-const useSecureCookies = (process.env.APP_BASE_URL ?? 'http://localhost:3000').startsWith('https://');
+const useSecureCookies = env.APP_BASE_URL.startsWith('https://');
 const COOKIE_NAME = useSecureCookies ? '__Secure-authjs.session-token' : 'authjs.session-token';
 const SCOPE = `openid profile email offline_access api://${CLIENT_ID}/access_as_user`;
 

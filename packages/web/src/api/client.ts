@@ -3,7 +3,7 @@ import { createIsomorphicFn } from '@tanstack/react-start';
 import { getRequest } from '@tanstack/react-start/server';
 import { type paths } from './schema';
 import { getAccessToken } from '#/lib/auth.server';
-import { env } from '#/env';
+import { env } from '#/env.server';
 
 export class ApiRequestError extends Error {
   constructor(public status: number) {

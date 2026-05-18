@@ -9,6 +9,7 @@
     "dev": "vite --port 3000",
     "build": "vp build",
     "preview": "vp preview",
+    "start": "bun run dist/server/server.js",
     "test": "vp test",
     "check": "vp check",
     "check:fix": "vp check --fix",

@@ -1,7 +1,7 @@
 import { Auth, type AuthConfig } from '@auth/core';
 import { getToken } from '@auth/core/jwt';
 import MicrosoftEntraID from '@auth/core/providers/microsoft-entra-id';
-import { env } from '#/env';
+import { env } from '#/env.server';
 
 const LOG_PREFIX = '[auth]';
 

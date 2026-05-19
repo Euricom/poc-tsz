@@ -42,5 +42,12 @@ bun run test:api  # runs backend unit tests
 
 Once static analysis and tests pass
 
-- write changes in CHANGELOG.md, outcome-focused entries, split by logical change, one line comments.
+- Update `CHANGELOG.md` under today's date with functional, user-facing bullet points. Each bullet answers "what can a user now do?" or "what behavior changed?" — not "what was built". No class/method names, no test counts, no migration names. Example:
+  - ✓ "Admins can view all users and create new ones via an Add dialog"
+  - ✓ "Creating a user automatically assigns a leave balance for each active leave type"
+  - ✗ "Added UserService.CreateAsync with single SaveChangesAsync and 10 unit tests"
 - commit the work. Run `Skill('git-commit')` to commit the work.
+
+### 5. Report QA
+
+Write a list of items the user should test to verify the work.

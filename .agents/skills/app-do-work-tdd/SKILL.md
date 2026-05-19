@@ -3,6 +3,8 @@ name: do-work-tdd
 description: Execute a unit of work end-to-end: plan, implement with tdd, validate with typecheck and tests, then commit. Use when user wants to do work, build a feature, fix a bug, or implement a phase from a plan.
 argument-hint: '[issue-file] — path to an issue markdown file.'
 disable-model-invocation: true
+model: sonnet
+effort: high
 ---
 
 # Do Work (TDD)
@@ -44,5 +46,5 @@ bun run test:api  # runs backend unit tests
 
 Once static analysis and tests pass
 
-- summarize changes in CHANGELOG.md as single-line, outcome-focused entries.
+- write changes in CHANGELOG.md, outcome-focused entries, split by logical change, one line comments.
 - commit the work. Run `Skill('git-commit')` to commit the work.

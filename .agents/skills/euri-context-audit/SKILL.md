@@ -48,13 +48,13 @@ Each server loads full tool definitions into context every turn
 Read all CLAUDE.md files (project root, .claude/, ~/.claude/).
 Count lines. Then read every rule and test against five filters:
 
-| Filter | Flag when... |
-|--------|-------------|
-| Default | Claude already does this without being told ("write clean code", "handle errors") |
-| Contradiction | Conflicts with another rule in same or different file |
-| Redundancy | Repeats something already covered elsewhere |
-| Bandaid | Added to fix one bad output, not improve outputs generally |
-| Vague | Interpreted differently every time ("be natural", "use good tone") |
+| Filter        | Flag when...                                                                      |
+| ------------- | --------------------------------------------------------------------------------- |
+| Default       | Claude already does this without being told ("write clean code", "handle errors") |
+| Contradiction | Conflicts with another rule in same or different file                             |
+| Redundancy    | Repeats something already covered elsewhere                                       |
+| Bandaid       | Added to fix one bad output, not improve outputs generally                        |
+| Vague         | Interpreted differently every time ("be natural", "use good tone")                |
 
 If total CLAUDE.md lines > 200, check for progressive disclosure
 opportunities: rules that only apply to specific tasks (API conventions,
@@ -65,7 +65,8 @@ as a single file.
 
 ### Skills
 
-Scan .claude/skills/*/SKILL.md. For each skill:
+Scan .claude/skills/\*/SKILL.md. For each skill:
+
 - Count lines (flag > 200, critical > 500)
 - Run the same five filters on instructions
 - Check for restated goals, hedging ("you may want to"), synonymous
@@ -75,39 +76,39 @@ Scan .claude/skills/*/SKILL.md. For each skill:
 
 Check settings.json for:
 
-| Setting | Flag if | Recommended |
-|---------|---------|-------------|
-| autocompact_percentage_override | Missing or > 80 | 75 |
-| BASH_MAX_OUTPUT_LENGTH (env) | At default (30-50K) | 150000 |
+| Setting                         | Flag if             | Recommended |
+| ------------------------------- | ------------------- | ----------- |
+| autocompact_percentage_override | Missing or > 80     | 75          |
+| BASH_MAX_OUTPUT_LENGTH (env)    | At default (30-50K) | 150000      |
 
 ### File Permissions
 
 Check settings.json for `permissions.deny` rules. If missing, check
 whether bloat directories exist in the project:
 
-| If this exists... | Should deny... |
-|-------------------|---------------|
-| package.json | node_modules, dist, build, .next, coverage |
-| Cargo.toml | target |
-| go.mod | vendor |
-| pyproject.toml / requirements.txt | __pycache__, .venv, *.egg-info |
+| If this exists...                 | Should deny...                             |
+| --------------------------------- | ------------------------------------------ |
+| package.json                      | node_modules, dist, build, .next, coverage |
+| Cargo.toml                        | target                                     |
+| go.mod                            | vendor                                     |
+| pyproject.toml / requirements.txt | **pycache**, .venv, \*.egg-info            |
 
 ## Step 3: Score and Report
 
 Score starts at 100. Deduct per issue:
 
-| Issue | Points |
-|-------|--------|
-| CLAUDE.md > 200 lines | -10 |
-| CLAUDE.md > 500 lines | -20 |
-| Per 5 rules flagged by filters | -5 |
-| Contradictions between files | -10 |
-| Missing autocompact override | -10 |
-| Missing bash output override | -5 |
-| Skill > 200 lines | -5 each |
-| Skill > 500 lines | -10 each |
-| Per MCP server | -3 each |
-| No deny rules + bloat dirs exist | -10 |
+| Issue                            | Points   |
+| -------------------------------- | -------- |
+| CLAUDE.md > 200 lines            | -10      |
+| CLAUDE.md > 500 lines            | -20      |
+| Per 5 rules flagged by filters   | -5       |
+| Contradictions between files     | -10      |
+| Missing autocompact override     | -10      |
+| Missing bash output override     | -5       |
+| Skill > 200 lines                | -5 each  |
+| Skill > 500 lines                | -10 each |
+| Per MCP server                   | -3 each  |
+| No deny rules + bloat dirs exist | -10      |
 
 Floor at 0. Output this format:
 
@@ -145,6 +146,7 @@ Severity: CRITICAL > 10pts, WARNING 5-10pts, INFO < 5pts.
 After the report:
 
 "Want me to fix any of these? I can:
+
 - Show you a cleaned-up CLAUDE.md with the flagged rules removed
 - Add the missing settings.json configs
 - Add permissions.deny rules for build artifacts

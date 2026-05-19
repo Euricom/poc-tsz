@@ -1,7 +1,7 @@
 ---
 name: worktree-merge
-description: "Merge a Claude Code worktree branch back into the repo's default branch (`main` or `master`) from the primary worktree, using `ExitWorktree` to remove the linked worktree at the end."
-argument-hint: "[strategy] — one of: merge | rebase. Optional second arg: --keep-branch to skip deleting the branch after merge."
+description: 'Merge a Claude Code worktree branch back into whatever branch the primary worktree currently has checked out (works for `main`/`master` or any feature branch), then remove the linked worktree via `ExitWorktree`.'
+argument-hint: '[strategy] — one of: merge | rebase. Optional second arg: --keep-branch to skip deleting the branch after merge.'
 disable-model-invocation: true
 model: haiku
 ---
@@ -18,96 +18,72 @@ The skill accepts a strategy argument that selects which workflow to run:
 Optional flags (can follow the strategy):
 
 - `--keep-branch` — do not delete the local/remote branch in Phase 4.
-- `--no-push` — skip pushing the default branch to origin (e.g. for offline work).
+- `--no-push` — skip pushing the target branch to origin (e.g. for offline work).
 
 If no argument is given, run the **default `--no-ff` merge** flow.
 
-If the argument is unrecognized, ask the user once for clarification before proceeding.
-
 ## Goal
 
-Take finished work from a linked Claude Code worktree, merge it into the repo's **default branch** (`main`, `master`, or whatever the project uses) on the primary worktree without leaving the linked worktree, then tear the linked worktree down with a single `ExitWorktree` call at the very end.
-
-The merge cannot run *with* the linked worktree's `HEAD` on the default branch — Git refuses to check out the same branch in two places. The trick is to use `git -C "$PRIMARY"` so all default-branch operations run against the primary worktree while the session's cwd stays inside the linked one.
+Merge a linked worktree's branch into **whatever branch the primary worktree currently has checked out** (the "target branch") — could be `main`, `master`, or a feature branch the user is stacking work onto. Then remove the linked worktree via `ExitWorktree`. All target-branch ops use `git -C "$PRIMARY"` so the session's cwd can stay inside the linked worktree (Git refuses to check out the same branch in two places).
 
 ## Assumed starting state
 
-- Claude Code session is running **inside a linked worktree** (created earlier via `EnterWorktree`).
+- Claude Code session is running **inside a linked worktree** under `.claude/worktrees/<name>/` (created earlier via `EnterWorktree`).
 - The worktree branch holds the finished work.
-- The primary worktree is on the default branch (its normal resting state).
+- The primary (root) worktree is on the **target branch** — whatever the user wants this work merged into.
 
-## Phase 1 — Verify the worktree is clean, detect default branch
+## Phase 1 — Verify worktree is clean, read target branch from primary
 
 **Do not stage or commit anything in this phase.** Committing is the user's responsibility — this skill only inspects.
 
-Detect the default branch, capture the worktree branch + primary path, and check cleanliness:
+The target branch is read directly from the primary worktree's `HEAD`. Whatever the user has checked out there is where this work goes.
 
 ```bash
-# Default branch — try origin/HEAD first, then fall back to common names
-MAIN=$(git symbolic-ref --short refs/remotes/origin/HEAD 2>/dev/null | sed 's@^origin/@@')
-if [ -z "$MAIN" ]; then
-  for b in main master trunk develop; do
-    if git show-ref --verify --quiet "refs/heads/$b"; then MAIN=$b; break; fi
-  done
-fi
-
 BRANCH=$(git branch --show-current)
 PRIMARY=$(git worktree list --porcelain | awk '/^worktree /{print $2; exit}')
+TARGET=$(git -C "$PRIMARY" branch --show-current)
 
-echo "main=$MAIN  branch=$BRANCH  primary=$PRIMARY"
+echo "branch=$BRANCH  target=$TARGET  primary=$PRIMARY"
 git status --porcelain
 ```
 
 Validate before continuing:
 
-- **`$MAIN` empty** → stop and ask the user which branch to merge into (no safe default).
-- **`$BRANCH` equals `$MAIN`** → stop; the worktree is on the default branch itself, nothing to merge.
 - **`$PRIMARY` equals current directory** → stop; the session is already in the primary worktree. Tell the user to run plain Git; this skill only applies inside a linked worktree.
-- **Detached HEAD** (`$BRANCH` empty) → stop and ask the user to create a named branch (see the "Detached HEAD case" section).
+- **Detached HEAD on linked worktree** (`$BRANCH` empty) → stop and ask the user to create a named branch (see `references/edge-cases.md`).
+- **Detached HEAD on primary worktree** (`$TARGET` empty) → stop; the primary worktree isn't on a branch, so there's nothing to merge _into_. Ask the user to check out the target branch in the primary worktree first.
+- **`$BRANCH` equals `$TARGET`** → stop; the worktree is on the same branch as primary — Git wouldn't have allowed this in the first place, but bail just in case.
 
 Then branch on tree state:
 
-- **Clean tree, branch ahead of `origin/$MAIN`** → proceed to Phase 2.
-- **Clean tree, no commits beyond `origin/$MAIN`** → stop and tell the user there is nothing to merge.
-- **Uncommitted changes** → **stop**. Do not run `git add`, `git commit`, or `git stash` on their behalf. Present a friendly summary instead of raw `git status` output:
+- **Clean tree, branch ahead of `$TARGET`** → proceed to Phase 2.
+- **Clean tree, no commits beyond `$TARGET`** → stop and tell the user there is nothing to merge.
+- **Uncommitted changes** → **stop**. Do not stage, commit, or stash. Show a grouped summary from `git status --porcelain` + `git diff --stat HEAD` (added/modified/deleted/untracked, one bullet per file with a short hint inferred from path + diff). End with a single next step: commit, then re-run `/git-worktree-merge`. No raw porcelain dump.
 
-  1. Run `git status --porcelain` and `git diff --stat HEAD` to gather the change set.
-  2. Render a changelog-style list grouped by intent (added / modified / deleted / untracked), one bullet per file with a short human-readable hint about what the change is. Infer the hint from the file path and diff (e.g. `plans/high-level-plan.md` → "new high-level implementation plan").
-  3. Close with a single next step: commit the changes, then re-run `/git-worktree-merge`.
-
-  Example shape:
-
-  ```
-  Cannot merge yet — this worktree has uncommitted work.
-
-  Changes to commit:
-  • Added    plans/high-level-plan.md   — new high-level implementation plan
-  • Modified src/foo.ts                  — wire up the new planner entrypoint
-
-  Please commit these changes, then re-run /git-worktree-merge.
-  ```
-
-  Keep it concise — no raw porcelain dump, no multi-paragraph explanation.
-
-## Phase 2 — Merge into the default branch (operating on the primary worktree)
-
-All commands here use `git -C "$PRIMARY"` so the primary worktree is the one being updated. The linked worktree's `HEAD` stays put on `$BRANCH` — that's required, because the branch must remain checked out somewhere for the merge to reference it.
+Check "ahead of target" with:
 
 ```bash
-git -C "$PRIMARY" switch "$MAIN"
-git -C "$PRIMARY" fetch origin
-git -C "$PRIMARY" pull --ff-only origin "$MAIN"
-git -C "$PRIMARY" merge --no-ff "$BRANCH" -m "Merge branch '$BRANCH'"
+git -C "$PRIMARY" rev-list --count "$TARGET..$BRANCH"
 ```
 
-Why `--no-ff`:
-- Preserves the task branch as a visible integration point.
-- Makes rollback and history inspection easier.
-- Fits the "one task per worktree branch" model.
+## Phase 2 — Merge into the target branch (operating on the primary worktree)
+
+All commands here use `git -C "$PRIMARY"`. Primary is already on `$TARGET` — no `switch` needed. The linked worktree's `HEAD` stays put on `$BRANCH`; the branch must remain checked out somewhere for the merge to reference it.
+
+```bash
+git -C "$PRIMARY" fetch origin
+# Only fast-forward if origin has the target branch (feature branches may be local-only)
+if git -C "$PRIMARY" show-ref --verify --quiet "refs/remotes/origin/$TARGET"; then
+  git -C "$PRIMARY" pull --ff-only origin "$TARGET"
+fi
+git -C "$PRIMARY" merge --no-ff "$BRANCH" -m "Merge branch '$BRANCH' into $TARGET"
+```
+
+`--no-ff` preserves the task branch as a visible integration point and fits "one task per worktree branch".
 
 ### If conflicts occur
 
-Conflicts are written into `$PRIMARY`, not the current cwd. Tell the user the path and resolve there:
+Conflicts land in `$PRIMARY`, not cwd. Resolve there:
 
 ```bash
 git -C "$PRIMARY" status
@@ -119,17 +95,17 @@ git -C "$PRIMARY" commit
 ## Phase 3 — Push and verify
 
 ```bash
-git -C "$PRIMARY" push origin "$MAIN"
+git -C "$PRIMARY" push origin "$TARGET"
 git -C "$PRIMARY" log --oneline --decorate -n 15
 ```
 
-If the branch was previously pushed to origin, delete the remote copy now (still using primary):
+`push` will create the remote branch if `$TARGET` is a new feature branch with no upstream yet — add `-u` once if you want it tracked.
+
+If the worktree branch was previously pushed, delete the remote copy now (must happen **before** Phase 4 — `ExitWorktree(remove)` drops the local ref):
 
 ```bash
 git -C "$PRIMARY" push origin --delete "$BRANCH" 2>/dev/null || true
 ```
-
-This must happen **before** Phase 4 — once `ExitWorktree(remove)` runs, the local branch ref is gone and you'd be guessing at its name.
 
 ## Phase 4 — Exit and remove the worktree
 
@@ -140,61 +116,34 @@ action: "remove"
 discard_changes: true
 ```
 
-- `remove` deletes the linked worktree directory **and** the local `$BRANCH`. Safe now: the commits are merged into `$MAIN` and pushed.
-- `discard_changes: true` is required because `ExitWorktree`'s safety check still sees `$BRANCH` as having commits "not on the original branch" (it doesn't re-check against `$MAIN` after our external merge). Since those commits are already on `$MAIN` and on `origin/$MAIN`, discarding the branch ref loses nothing.
+- `remove` deletes the linked worktree directory **and** the local `$BRANCH`. Safe now: commits are merged and pushed.
+- `discard_changes: true` is needed because `ExitWorktree`'s safety check doesn't re-check against `$TARGET` after our external merge — but those commits are already on `$TARGET` (and on `origin/$TARGET` if pushed), so discarding the ref loses nothing.
 
-After this call the session is back at `$PRIMARY` and the linked worktree is gone.
+## Rebase variant
 
-## Variant: linear history (rebase)
-
-Same shape, just rebase before merging:
-
-```bash
-# Phase 2 (still inside the linked worktree)
-git fetch origin
-git rebase "origin/$MAIN"                              # rewrites $BRANCH
-git push --force-with-lease -u origin "$BRANCH"        # only if previously pushed
-
-git -C "$PRIMARY" switch "$MAIN"
-git -C "$PRIMARY" pull --ff-only origin "$MAIN"
-git -C "$PRIMARY" merge --ff-only "$BRANCH"
-git -C "$PRIMARY" push origin "$MAIN"
-git -C "$PRIMARY" push origin --delete "$BRANCH" 2>/dev/null || true
-
-# Phase 4: ExitWorktree(action="remove", discard_changes=true)
-```
-
-Use rebase only when rewriting branch history is acceptable.
+If invoked with `rebase`, see [`references/rebase-variant.md`](references/rebase-variant.md).
 
 ## Decision guide
 
-| Situation                             | Best option                                        |
-| ------------------------------------- | -------------------------------------------------- |
-| Normal Claude Code worktree task      | `--no-ff` merge from primary (default flow above)  |
-| Small personal branch, linear history | Rebase variant                                     |
-| Experimental detached worktree        | Create a real branch first (see below), then merge |
+| Situation                                      | Best option                                         |
+| ---------------------------------------------- | --------------------------------------------------- |
+| Normal Claude Code worktree task               | `--no-ff` merge into primary's branch (default)     |
+| Stacking work onto a feature branch in primary | Same default flow — `$TARGET` is the feature branch |
+| Small personal branch, linear history          | Rebase variant                                      |
+| Experimental detached worktree                 | Create a real branch first, then merge              |
 
 ## Universal rules
 
 - Merge **branches**, not directories.
-- Detect the default branch — never hardcode `main` or `master`.
-- The worktree must be clean before Phase 2 — the skill never commits or stashes for the user.
-- All default-branch operations use `git -C "$PRIMARY"`; do not `git switch "$MAIN"` inside the linked worktree (Git will refuse).
+- Target branch = whatever the primary worktree has checked out. Never hardcode `main`/`master`.
+- The linked worktree must be clean before Phase 2 — the skill never commits or stashes for the user.
+- All target-branch operations use `git -C "$PRIMARY"`; do not `git switch "$TARGET"` inside the linked worktree (Git will refuse).
 - Delete the remote feature branch (if any) **before** `ExitWorktree`, while the local ref still exists.
 - Cleanup happens via one `ExitWorktree(action="remove", discard_changes=true)` call at the end — no separate `git worktree remove` step.
 
-## Detached HEAD case
+## Edge cases
 
-If the linked worktree was started with `--detach`, create a branch before Phase 2:
-
-```bash
-git switch -c feature/recover-work
-```
-
-## Recovery
-
-- Stale worktree metadata after manual deletion: `git worktree prune`
-- Moved worktree Git can't find: `git worktree repair`
+Detached HEAD, stale metadata, moved worktree → see [`references/edge-cases.md`](references/edge-cases.md).
 
 ## Team policy (Claude Code)
 

@@ -104,13 +104,13 @@ Rules:
 - **Describe the domain action**, not the C# call: `When_Cancelling`, not `When_CallingCancelAsync`.
 - **`Given_` is optional when there's no precondition** — `When_Adding_Then_ReturnsSum` is fine.
 - **No `Should_` prefix, no `_Test` suffix.**
-- The name doesn't save a bad body — if the `Then` asserts on `Received(1)` or a raw DB row, the test is still bad (see *Bad Tests* above).
+- The name doesn't save a bad body — if the `Then` asserts on `Received(1)` or a raw DB row, the test is still bad (see _Bad Tests_ above).
 
 ## Additional xUnit practices
 
 - **AAA layout**: Arrange, Act, Assert separated by blank lines. At most one Act per test — if you have two, you have two tests.
 - **Return `Task`, never `async void`** — `async void` swallows exceptions and xUnit can't observe failures.
-- **`[Theory]` + `[InlineData]`** for the same behaviour over multiple inputs; one `[Fact]` per *distinct* behaviour, not per input value.
+- **`[Theory]` + `[InlineData]`** for the same behaviour over multiple inputs; one `[Fact]` per _distinct_ behaviour, not per input value.
 - **Async exceptions**: `await Assert.ThrowsAsync<TException>(() => service.DoAsync())`.
 - **Use the most specific assertion** — `Assert.Equal`, `Assert.NotNull`, `Assert.Contains`, `Assert.Empty`. They produce useful failure messages; `Assert.True(x == y)` produces `Expected: True, Actual: False`.
 - **No control flow in tests** — no `if`/`for`/`switch`/`try`. If you need branching, you need separate tests or a `[Theory]`.

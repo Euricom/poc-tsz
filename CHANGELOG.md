@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-05-19
+
+- chore(agents): add `do-work` and `do-work-tdd` skills that drive a unit of work end-to-end (plan → implement → validate via `bun run check`/`test:web`/`test:api` → CHANGELOG update → commit); `do-work-tdd` adds red/green/refactor for backend code
+- chore(agents): mark `matt-zoom-out` skill state as `research`
+- chore(build): rename root `test` script to `test:web` so `bun run test:web` runs frontend unit tests; `test:api` still runs backend tests
+
 ## 2026-05-18
 
 - refactor(web): centralize env vars in `src/env.ts` — Zod schema validates `SERVER_URL`, `APP_BASE_URL`, `AUTH_TENANT_ID`, `AUTH_CLIENT_ID`, `AUTH_CLIENT_SECRET`, `AUTH_SECRET` at startup; `auth.server.ts` and `api/client.ts` replaced all `process.env.*` references with typed `env.*` imports; removed intermediate constant aliases in `auth.server.ts` so `env.*` is used directly at each call site

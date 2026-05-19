@@ -47,7 +47,7 @@ describe('animalSchema', () => {
   it('rejects missing fields', () => {
     const result = animalSchema.safeParse({});
     expect(result.success).toBe(false);
-    const paths = result.error?.issues.map((i) => i.path[0]).sort();
+    const paths = result.error?.issues.map((i) => i.path[0]).toSorted();
     expect(paths).toEqual(['age', 'name', 'species']);
   });
 });

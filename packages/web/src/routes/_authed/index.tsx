@@ -4,18 +4,18 @@ import { signOut, useSession } from '#/lib/auth-client';
 
 export const Route = createFileRoute('/_authed/')({ component: Home });
 
+const handleLogout = async () => {
+  console.log('[home] logout clicked');
+  try {
+    await signOut('/login');
+  } catch (err) {
+    console.error('[home] sign-out failed', err);
+  }
+};
+
 function Home() {
   const { data, isPending } = useSession();
   const user = data?.user;
-
-  const handleLogout = async () => {
-    console.log('[home] logout clicked');
-    try {
-      await signOut('/login');
-    } catch (err) {
-      console.error('[home] sign-out failed', err);
-    }
-  };
 
   return (
     <main className="space-y-4">

@@ -22,12 +22,12 @@ export const Route = createFileRoute('/login')({
   component: LoginPage,
 });
 
-function LoginPage() {
-  const handleClick = () => {
-    console.log('[login] sign-in clicked → microsoft');
-    void signInWithMicrosoft('/');
-  };
+const handleClick = () => {
+  console.log('[login] sign-in clicked → microsoft');
+  void signInWithMicrosoft('/');
+};
 
+function LoginPage() {
   return (
     <main className="grid min-h-[60vh] place-items-center">
       <div className="w-80 space-y-4 text-center">

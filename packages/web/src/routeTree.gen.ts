@@ -8,94 +8,81 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-import { Route as rootRouteImport } from './routes/__root'
-import { Route as LoginRouteImport } from './routes/login'
-import { Route as AuthedRouteImport } from './routes/_authed'
-import { Route as AuthedIndexRouteImport } from './routes/_authed/index'
-import { Route as AuthedAnimalsIndexRouteImport } from './routes/_authed/animals/index'
-import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
-import { Route as AuthedAnimalsIdRouteImport } from './routes/_authed/animals/$id'
-import { Route as AuthedAdminLeaveTypesIndexRouteImport } from './routes/_authed/admin/leave-types/index'
+import { Route as rootRouteImport } from './routes/__root';
+import { Route as LoginRouteImport } from './routes/login';
+import { Route as AuthedRouteImport } from './routes/_authed';
+import { Route as AuthedIndexRouteImport } from './routes/_authed/index';
+import { Route as AuthedAnimalsIndexRouteImport } from './routes/_authed/animals/index';
+import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$';
+import { Route as AuthedAnimalsIdRouteImport } from './routes/_authed/animals/$id';
+import { Route as AuthedAdminLeaveTypesIndexRouteImport } from './routes/_authed/admin/leave-types/index';
 
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const AuthedRoute = AuthedRouteImport.update({
   id: '/_authed',
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const AuthedIndexRoute = AuthedIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AuthedRoute,
-} as any)
+} as any);
 const AuthedAnimalsIndexRoute = AuthedAnimalsIndexRouteImport.update({
   id: '/animals/',
   path: '/animals/',
   getParentRoute: () => AuthedRoute,
-} as any)
+} as any);
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   id: '/api/auth/$',
   path: '/api/auth/$',
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const AuthedAnimalsIdRoute = AuthedAnimalsIdRouteImport.update({
   id: '/animals/$id',
   path: '/animals/$id',
   getParentRoute: () => AuthedRoute,
-} as any)
-const AuthedAdminLeaveTypesIndexRoute =
-  AuthedAdminLeaveTypesIndexRouteImport.update({
-    id: '/admin/leave-types/',
-    path: '/admin/leave-types/',
-    getParentRoute: () => AuthedRoute,
-  } as any)
+} as any);
+const AuthedAdminLeaveTypesIndexRoute = AuthedAdminLeaveTypesIndexRouteImport.update({
+  id: '/admin/leave-types/',
+  path: '/admin/leave-types/',
+  getParentRoute: () => AuthedRoute,
+} as any);
 
 export interface FileRoutesByFullPath {
-  '/': typeof AuthedIndexRoute
-  '/login': typeof LoginRoute
-  '/animals/$id': typeof AuthedAnimalsIdRoute
-  '/api/auth/$': typeof ApiAuthSplatRoute
-  '/animals/': typeof AuthedAnimalsIndexRoute
-  '/admin/leave-types/': typeof AuthedAdminLeaveTypesIndexRoute
+  '/': typeof AuthedIndexRoute;
+  '/login': typeof LoginRoute;
+  '/animals/$id': typeof AuthedAnimalsIdRoute;
+  '/api/auth/$': typeof ApiAuthSplatRoute;
+  '/animals/': typeof AuthedAnimalsIndexRoute;
+  '/admin/leave-types/': typeof AuthedAdminLeaveTypesIndexRoute;
 }
 export interface FileRoutesByTo {
-  '/login': typeof LoginRoute
-  '/': typeof AuthedIndexRoute
-  '/animals/$id': typeof AuthedAnimalsIdRoute
-  '/api/auth/$': typeof ApiAuthSplatRoute
-  '/animals': typeof AuthedAnimalsIndexRoute
-  '/admin/leave-types': typeof AuthedAdminLeaveTypesIndexRoute
+  '/login': typeof LoginRoute;
+  '/': typeof AuthedIndexRoute;
+  '/animals/$id': typeof AuthedAnimalsIdRoute;
+  '/api/auth/$': typeof ApiAuthSplatRoute;
+  '/animals': typeof AuthedAnimalsIndexRoute;
+  '/admin/leave-types': typeof AuthedAdminLeaveTypesIndexRoute;
 }
 export interface FileRoutesById {
-  __root__: typeof rootRouteImport
-  '/_authed': typeof AuthedRouteWithChildren
-  '/login': typeof LoginRoute
-  '/_authed/': typeof AuthedIndexRoute
-  '/_authed/animals/$id': typeof AuthedAnimalsIdRoute
-  '/api/auth/$': typeof ApiAuthSplatRoute
-  '/_authed/animals/': typeof AuthedAnimalsIndexRoute
-  '/_authed/admin/leave-types/': typeof AuthedAdminLeaveTypesIndexRoute
+  __root__: typeof rootRouteImport;
+  '/_authed': typeof AuthedRouteWithChildren;
+  '/login': typeof LoginRoute;
+  '/_authed/': typeof AuthedIndexRoute;
+  '/_authed/animals/$id': typeof AuthedAnimalsIdRoute;
+  '/api/auth/$': typeof ApiAuthSplatRoute;
+  '/_authed/animals/': typeof AuthedAnimalsIndexRoute;
+  '/_authed/admin/leave-types/': typeof AuthedAdminLeaveTypesIndexRoute;
 }
 export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths:
-    | '/'
-    | '/login'
-    | '/animals/$id'
-    | '/api/auth/$'
-    | '/animals/'
-    | '/admin/leave-types/'
-  fileRoutesByTo: FileRoutesByTo
-  to:
-    | '/login'
-    | '/'
-    | '/animals/$id'
-    | '/api/auth/$'
-    | '/animals'
-    | '/admin/leave-types'
+  fileRoutesByFullPath: FileRoutesByFullPath;
+  fullPaths: '/' | '/login' | '/animals/$id' | '/api/auth/$' | '/animals/' | '/admin/leave-types/';
+  fileRoutesByTo: FileRoutesByTo;
+  to: '/login' | '/' | '/animals/$id' | '/api/auth/$' | '/animals' | '/admin/leave-types';
   id:
     | '__root__'
     | '/_authed'
@@ -104,74 +91,74 @@ export interface FileRouteTypes {
     | '/_authed/animals/$id'
     | '/api/auth/$'
     | '/_authed/animals/'
-    | '/_authed/admin/leave-types/'
-  fileRoutesById: FileRoutesById
+    | '/_authed/admin/leave-types/';
+  fileRoutesById: FileRoutesById;
 }
 export interface RootRouteChildren {
-  AuthedRoute: typeof AuthedRouteWithChildren
-  LoginRoute: typeof LoginRoute
-  ApiAuthSplatRoute: typeof ApiAuthSplatRoute
+  AuthedRoute: typeof AuthedRouteWithChildren;
+  LoginRoute: typeof LoginRoute;
+  ApiAuthSplatRoute: typeof ApiAuthSplatRoute;
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
     '/login': {
-      id: '/login'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof LoginRouteImport
-      parentRoute: typeof rootRouteImport
-    }
+      id: '/login';
+      path: '/login';
+      fullPath: '/login';
+      preLoaderRoute: typeof LoginRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
     '/_authed': {
-      id: '/_authed'
-      path: ''
-      fullPath: '/'
-      preLoaderRoute: typeof AuthedRouteImport
-      parentRoute: typeof rootRouteImport
-    }
+      id: '/_authed';
+      path: '';
+      fullPath: '/';
+      preLoaderRoute: typeof AuthedRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
     '/_authed/': {
-      id: '/_authed/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof AuthedIndexRouteImport
-      parentRoute: typeof AuthedRoute
-    }
+      id: '/_authed/';
+      path: '/';
+      fullPath: '/';
+      preLoaderRoute: typeof AuthedIndexRouteImport;
+      parentRoute: typeof AuthedRoute;
+    };
     '/_authed/animals/': {
-      id: '/_authed/animals/'
-      path: '/animals'
-      fullPath: '/animals/'
-      preLoaderRoute: typeof AuthedAnimalsIndexRouteImport
-      parentRoute: typeof AuthedRoute
-    }
+      id: '/_authed/animals/';
+      path: '/animals';
+      fullPath: '/animals/';
+      preLoaderRoute: typeof AuthedAnimalsIndexRouteImport;
+      parentRoute: typeof AuthedRoute;
+    };
     '/api/auth/$': {
-      id: '/api/auth/$'
-      path: '/api/auth/$'
-      fullPath: '/api/auth/$'
-      preLoaderRoute: typeof ApiAuthSplatRouteImport
-      parentRoute: typeof rootRouteImport
-    }
+      id: '/api/auth/$';
+      path: '/api/auth/$';
+      fullPath: '/api/auth/$';
+      preLoaderRoute: typeof ApiAuthSplatRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
     '/_authed/animals/$id': {
-      id: '/_authed/animals/$id'
-      path: '/animals/$id'
-      fullPath: '/animals/$id'
-      preLoaderRoute: typeof AuthedAnimalsIdRouteImport
-      parentRoute: typeof AuthedRoute
-    }
+      id: '/_authed/animals/$id';
+      path: '/animals/$id';
+      fullPath: '/animals/$id';
+      preLoaderRoute: typeof AuthedAnimalsIdRouteImport;
+      parentRoute: typeof AuthedRoute;
+    };
     '/_authed/admin/leave-types/': {
-      id: '/_authed/admin/leave-types/'
-      path: '/admin/leave-types'
-      fullPath: '/admin/leave-types/'
-      preLoaderRoute: typeof AuthedAdminLeaveTypesIndexRouteImport
-      parentRoute: typeof AuthedRoute
-    }
+      id: '/_authed/admin/leave-types/';
+      path: '/admin/leave-types';
+      fullPath: '/admin/leave-types/';
+      preLoaderRoute: typeof AuthedAdminLeaveTypesIndexRouteImport;
+      parentRoute: typeof AuthedRoute;
+    };
   }
 }
 
 interface AuthedRouteChildren {
-  AuthedIndexRoute: typeof AuthedIndexRoute
-  AuthedAnimalsIdRoute: typeof AuthedAnimalsIdRoute
-  AuthedAnimalsIndexRoute: typeof AuthedAnimalsIndexRoute
-  AuthedAdminLeaveTypesIndexRoute: typeof AuthedAdminLeaveTypesIndexRoute
+  AuthedIndexRoute: typeof AuthedIndexRoute;
+  AuthedAnimalsIdRoute: typeof AuthedAnimalsIdRoute;
+  AuthedAnimalsIndexRoute: typeof AuthedAnimalsIndexRoute;
+  AuthedAdminLeaveTypesIndexRoute: typeof AuthedAdminLeaveTypesIndexRoute;
 }
 
 const AuthedRouteChildren: AuthedRouteChildren = {
@@ -179,25 +166,22 @@ const AuthedRouteChildren: AuthedRouteChildren = {
   AuthedAnimalsIdRoute: AuthedAnimalsIdRoute,
   AuthedAnimalsIndexRoute: AuthedAnimalsIndexRoute,
   AuthedAdminLeaveTypesIndexRoute: AuthedAdminLeaveTypesIndexRoute,
-}
+};
 
-const AuthedRouteWithChildren =
-  AuthedRoute._addFileChildren(AuthedRouteChildren)
+const AuthedRouteWithChildren = AuthedRoute._addFileChildren(AuthedRouteChildren);
 
 const rootRouteChildren: RootRouteChildren = {
   AuthedRoute: AuthedRouteWithChildren,
   LoginRoute: LoginRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
-}
-export const routeTree = rootRouteImport
-  ._addFileChildren(rootRouteChildren)
-  ._addFileTypes<FileRouteTypes>()
+};
+export const routeTree = rootRouteImport._addFileChildren(rootRouteChildren)._addFileTypes<FileRouteTypes>();
 
-import type { getRouter } from './router.tsx'
-import type { createStart } from '@tanstack/react-start'
+import type { getRouter } from './router.tsx';
+import type { createStart } from '@tanstack/react-start';
 declare module '@tanstack/react-start' {
   interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
+    ssr: true;
+    router: Awaited<ReturnType<typeof getRouter>>;
   }
 }

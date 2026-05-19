@@ -11,9 +11,9 @@ vi.mock('#/lib/auth.server', () => ({
 }));
 
 const mockFetch = vi.hoisted(() => {
-  const mockFetch = vi.fn();
-  globalThis.fetch = mockFetch as typeof fetch;
-  return mockFetch;
+  const fn = vi.fn();
+  globalThis.fetch = fn as typeof fetch;
+  return fn;
 });
 
 const lastRequest = (): Request => mockFetch.mock.calls.at(-1)![0] as Request;

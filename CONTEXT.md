@@ -41,7 +41,7 @@ Server clock year (`DateTime.UtcNow.Year`). All new `UserLeave` rows — whether
 - A **UserLeave** belongs to exactly one **User** and exactly one **LeaveType**.
 - A **LeaveType** is global; `UserLeaves` reference it but the type is not user-scoped.
 - Deleting a **User** cascades to their **UserLeaves**.
-- Archiving a **LeaveType** does *not* delete or hide its **UserLeaves**; they remain editable.
+- Archiving a **LeaveType** does _not_ delete or hide its **UserLeaves**; they remain editable.
 
 ## Rules
 

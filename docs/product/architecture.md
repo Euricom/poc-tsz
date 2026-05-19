@@ -64,7 +64,7 @@ react-app/                       # packages/web-tanstack-start
 - C# & .NET 10+
 - ASP.NET Core Web API: Minimal APIs for endpoints
 - Entity Framework Core for DB access
-- SQLite as database 
+- SQLite as database
 - Dependency Injection
 - OpenAPI enabled for documented API endpoints
 - Optional: CQRS Pattern
@@ -72,6 +72,7 @@ react-app/                       # packages/web-tanstack-start
 - Optional: Repositories, ...
 
 **Global**
+
 - Monorepo using Bun workspaces for the web packages; .NET projects live next to them as standalone projects
 - Root tooling via [vite-plus](https://www.npmjs.com/package/vite-plus) (`vp check` wraps OXLint + OXFmt)
 

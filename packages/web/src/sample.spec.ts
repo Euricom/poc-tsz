@@ -6,6 +6,6 @@ describe('sample', () => {
   });
 
   it('should concatenate strings', () => {
-    expect('hello' + ' ' + 'world').toBe('hello world');
+    expect(`${'hello'} ${'world'}`).toBe('hello world');
   });
 });

@@ -1,4 +1,4 @@
-# Requirements 
+# Requirements
 
 The main goal of this application is to provide a platform for time tracking and leave management for Euricom.
 So the main features are:
@@ -44,11 +44,13 @@ To manage the users and their settings you need:
 - You can navigate to the previous and next week and choose a date in the calendar or 'today'
 - When navigating away from the time entry page or week is changed, the time entries are saved automatically
 
-**Prio 2:
+\*\*Prio 2:
+
 - The holidays are not editable
 - You can submit the week for approval (week will be marked as 'approved)
 
 **Out of Scope:**
+
 - Add km
 - Comments
 
@@ -73,7 +75,6 @@ To manage the users and their settings you need:
 
 <img src="./images/user-timesheet.png" alt="Time Entry" width="600">
 
-
 **Out of Scope:**
 
 - Timesheet approval/signing
@@ -84,12 +85,13 @@ To manage the users and their settings you need:
 
 **Prio 1:**
 
-- A year overview of all taken leave days 
+- A year overview of all taken leave days
 - A summary (see balance) of total leave days for the user for the year
 - Indication of the current date, weekend
 - When clicking on a day, the time entry page is opened for that week
 
 **Prio 2**
+
 - Indication of the school & work holidays (auto retrieved via https://www.openholidaysapi.org/en/)
 
 ### Settings
@@ -102,13 +104,15 @@ All settings required for the time tracking and leave management.
 
 A list of customers
 
-Fields: 
+Fields:
+
 - auto generated customer number
 - customer name
 - customer address (street, zip, city, country)
 - contact person name & email
 
 **Prio 2:**
+
 - Client manager can be assigned to a customer
 
 **Customer list**
@@ -119,7 +123,8 @@ Fields:
 
 A list contract related to a customer
 
-Fields: 
+Fields:
+
 - auto generated contract number
 - customer ref
 - subject (typically project name, will be displayed in the time entry)
@@ -127,6 +132,7 @@ Fields:
 - start & end date (only contract in date range can be selected in time entry)
 
 **Prio 2:**
+
 - task (name & rate, name is displayed in the time entry), eg: .NET Developer, €500/d
 - Client manager can be assigned to a contract
 
@@ -138,7 +144,8 @@ Fields:
 
 A list of a users
 
-Fields: 
+Fields:
+
 - Name
 - Email
 - Role (Admin, User, Client Manager)
@@ -165,4 +172,3 @@ Fields:
 <img src="./images/admin-user-leave-sickness.png" alt="Settings" width="300">
 
 <img src="./images/admin-user-leave.png" alt="Settings" width="300">
-

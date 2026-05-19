@@ -1,26 +1,26 @@
 ---
 version: alpha
 name: Euricom
-description: "Design system inspired by Euricom — bold, technology-forward dark UI with deep teal surfaces (#014046) and electric lime accents (#00FF00). Montserrat typography, high contrast, grid-forward composition, enterprise-grade polish with energetic CTAs."
+description: 'Design system inspired by Euricom — bold, technology-forward dark UI with deep teal surfaces (#014046) and electric lime accents (#00FF00). Montserrat typography, high contrast, grid-forward composition, enterprise-grade polish with energetic CTAs.'
 colors:
-  primary: "#00FF00"
-  secondary: "#014046"
-  tertiary: "#DD23BB"
-  neutral: "#062227"
-  surface-muted: "#1D242C"
-  background: "#014046"
-  surface: "#014046"
-  text-primary: "#FFFFFF"
-  text-secondary: "#333333"
-  text-on-accent: "#111519"
-  text-muted: "#CBD9DA"
-  border: "#CBD9DA"
-  border-light: "#EEEEEE"
-  accent-muted: "#114E0B"
-  success: "#00FF00"
-  success-soft: "#CEF5CA"
-  error: "#3B0B0B"
-  warning: "#F8E4E4"
+  primary: '#00FF00'
+  secondary: '#014046'
+  tertiary: '#DD23BB'
+  neutral: '#062227'
+  surface-muted: '#1D242C'
+  background: '#014046'
+  surface: '#014046'
+  text-primary: '#FFFFFF'
+  text-secondary: '#333333'
+  text-on-accent: '#111519'
+  text-muted: '#CBD9DA'
+  border: '#CBD9DA'
+  border-light: '#EEEEEE'
+  accent-muted: '#114E0B'
+  success: '#00FF00'
+  success-soft: '#CEF5CA'
+  error: '#3B0B0B'
+  warning: '#F8E4E4'
 typography:
   headline-display:
     fontFamily: Montserrat
@@ -99,47 +99,47 @@ spacing:
   content-max: 1280px
 components:
   button-primary:
-    backgroundColor: "{colors.primary}"
-    textColor: "{colors.text-on-accent}"
-    typography: "{typography.button-md}"
-    rounded: "{rounded.sm}"
+    backgroundColor: '{colors.primary}'
+    textColor: '{colors.text-on-accent}'
+    typography: '{typography.button-md}'
+    rounded: '{rounded.sm}'
     padding: 12px 32px
   button-secondary:
     backgroundColor: transparent
-    textColor: "{colors.primary}"
-    borderColor: "{colors.primary}"
-    typography: "{typography.button-md}"
-    rounded: "{rounded.sm}"
+    textColor: '{colors.primary}'
+    borderColor: '{colors.primary}'
+    typography: '{typography.button-md}'
+    rounded: '{rounded.sm}'
     padding: 12px 32px
   button-ghost:
     backgroundColor: transparent
-    textColor: "{colors.text-primary}"
-    borderColor: "{colors.text-primary}"
-    typography: "{typography.body-sm}"
-    rounded: "{rounded.sm}"
+    textColor: '{colors.text-primary}'
+    borderColor: '{colors.text-primary}'
+    typography: '{typography.body-sm}'
+    rounded: '{rounded.sm}'
     padding: 12px 24px
   card-featured:
-    backgroundColor: "{colors.surface}"
-    textColor: "{colors.text-primary}"
-    typography: "{typography.body-md}"
-    rounded: "{rounded.lg}"
+    backgroundColor: '{colors.surface}'
+    textColor: '{colors.text-primary}'
+    typography: '{typography.body-md}'
+    rounded: '{rounded.lg}'
     padding: 32px
   card-light:
-    backgroundColor: "{colors.text-primary}"
-    textColor: "{colors.text-on-accent}"
-    typography: "{typography.body-md}"
-    rounded: "{rounded.lg}"
+    backgroundColor: '{colors.text-primary}'
+    textColor: '{colors.text-on-accent}'
+    typography: '{typography.body-md}'
+    rounded: '{rounded.lg}'
     padding: 32px
   input-default:
-    backgroundColor: "{colors.surface}"
-    textColor: "{colors.text-primary}"
-    typography: "{typography.body-md}"
-    rounded: "{rounded.sm}"
+    backgroundColor: '{colors.surface}'
+    textColor: '{colors.text-primary}'
+    typography: '{typography.body-md}'
+    rounded: '{rounded.sm}'
     padding: 8px 16px
   nav-bar:
-    backgroundColor: "{colors.surface}"
-    textColor: "{colors.text-primary}"
-    typography: "{typography.body-md}"
+    backgroundColor: '{colors.surface}'
+    textColor: '{colors.text-primary}'
+    typography: '{typography.body-md}'
     padding: 16px 40px
 ---
 
@@ -150,6 +150,7 @@ components:
 Euricom's design system embodies a bold, technology-forward aesthetic rooted in deep teal and electric lime green. The visual language communicates innovation, precision, and forward-thinking expertise through high contrast, minimal ornamentation, and a sophisticated dark-mode foundation. The design leverages a grid-based backdrop with geometric accent elements to convey technical prowess and digital mastery. This system strikes a balance between corporate professionalism and cutting-edge tech energy, positioning Euricom as boundary-pushers in IT services. Bright neon green accents pop against dark, ocean-inspired backgrounds, creating visual tension that emphasizes energy and momentum. The overall aesthetic is premium, confident, and distinctly modern—designed to attract enterprise clients and demonstrate technical sophistication.
 
 **Key Characteristics**
+
 - Deep teal and dark navy foundation with electric lime green accents
 - High contrast, light-on-dark typography for legibility and impact
 - Minimal, geometric design language with grid-based patterns
@@ -162,20 +163,24 @@ Euricom's design system embodies a bold, technology-forward aesthetic rooted in 
 ## 2. Color Palette & Roles
 
 ### Primary
+
 - **Teal Dark** (`#014046`): Primary background and surface color for interactive elements, cards, and navigation. Dominant throughout the interface.
 - **Teal Medium** (`#062227`): Secondary dark surface for layered depth and section differentiation.
 - **Teal Light** (`#1D242C`): Tertiary dark shade for subtle contrast and component states.
 
 ### Accent Colors
+
 - **Lime Green** (`#00FF00`): Primary accent and CTA indicator. Used for success states, active links, highlights, and primary button states. High visibility and energy.
 - **Green Accent** (`#114E0B`): Muted secondary green for supporting accents and complementary emphasis.
 - **Magenta** (`#DD23BB`): Tertiary accent for special highlights or alternative CTAs (used sparingly).
 
 ### Interactive
+
 - **Lime Green** (`#00FF00`): Active states, hover highlights, focused elements, and primary call-to-action buttons.
 - **Teal Dark** (`#014046`): Input field backgrounds and interactive component surfaces.
 
 ### Neutral Scale
+
 - **White** (`#FFFFFF`): Primary text, content areas, and maximum contrast backgrounds.
 - **Light Gray** (`#EEEEEE`): Secondary backgrounds and dividers.
 - **Medium Gray** (`#CBD9DA`): Subtle borders and tertiary text.
@@ -183,12 +188,14 @@ Euricom's design system embodies a bold, technology-forward aesthetic rooted in 
 - **Black** (`#000000`): Utility color for deep shadows or extreme contrast (minimal use).
 
 ### Surface & Borders
+
 - **Teal Dark** (`#014046`): Primary card and container backgrounds with `24px` border radius.
 - **Teal Medium** (`#062227`): Alternative surface for layering and visual separation.
 - **White** (`#FFFFFF`): Light surface backgrounds and high-contrast cards (used in specific contexts).
 - **Neutral Gray** (`#CBD9DA`): Subtle borders and dividers between sections.
 
 ### Semantic / Status
+
 - **Success** (`#00FF00`): Confirmation states, active toggles, and positive feedback indicators.
 - **Error** (`#3B0B0B`): Error backgrounds and warning states (dark red).
 - **Warning** (`#F8E4E4`): Soft background for cautionary or informational contexts.
@@ -197,6 +204,7 @@ Euricom's design system embodies a bold, technology-forward aesthetic rooted in 
 ## 3. Typography Rules
 
 ### Font Family
+
 **Primary:** Montserrat Variable Font with fallback stack: `Montserrat, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif`
 **Secondary:** Montserrat (all weights) for consistent brand voice.
 
@@ -215,6 +223,7 @@ Euricom's design system embodies a bold, technology-forward aesthetic rooted in 
 | Button Text      | Montserrat | 16px   | 600    | 25.6px      | 0px            | CTA and interactive button labels         |
 
 ### Principles
+
 - **Single typeface system:** Montserrat Variable Font across all roles ensures cohesive, modern aesthetic.
 - **Weight contrast:** Leverage weights 400, 500, 600, and 700 to create visual hierarchy without font switches.
 - **Generous line height:** All line heights exceed font size by 1.2–1.6× for improved readability and premium spacing.
@@ -227,6 +236,7 @@ Euricom's design system embodies a bold, technology-forward aesthetic rooted in 
 ### Buttons
 
 #### Primary Button
+
 - **Background:** `#00FF00` (Lime Green)
 - **Text Color:** `#111519` (Near-black for contrast on bright background)
 - **Font Size:** `16px`
@@ -241,6 +251,7 @@ Euricom's design system embodies a bold, technology-forward aesthetic rooted in 
 - **Focus State:** Box shadow `0 0 0 3px rgba(0, 255, 0, 0.3)`
 
 #### Secondary Button
+
 - **Background:** `transparent`
 - **Text Color:** `#00FF00` (Lime Green)
 - **Font Size:** `16px`
@@ -255,6 +266,7 @@ Euricom's design system embodies a bold, technology-forward aesthetic rooted in 
 - **Focus State:** Box shadow `0 0 0 3px rgba(0, 255, 0, 0.3)`
 
 #### Ghost Button
+
 - **Background:** `transparent`
 - **Text Color:** `#FFFFFF` (White)
 - **Font Size:** `16px`
@@ -271,6 +283,7 @@ Euricom's design system embodies a bold, technology-forward aesthetic rooted in 
 ### Cards & Containers
 
 #### Featured Card (with teal background)
+
 - **Background:** `#014046` (Teal Dark)
 - **Text Color:** `#FFFFFF` (White)
 - **Font Size:** `19.2px`
@@ -283,6 +296,7 @@ Euricom's design system embodies a bold, technology-forward aesthetic rooted in 
 - **Hover State:** Border `rgba(0, 255, 0, 0.4)`, box shadow `0 12px 32px rgba(0, 0, 0, 0.4)`
 
 #### Light Card (with white/neutral background)
+
 - **Background:** `#FFFFFF` (White)
 - **Text Color:** `#111519` (Dark gray/near-black)
 - **Font Size:** `19.2px`
@@ -295,6 +309,7 @@ Euricom's design system embodies a bold, technology-forward aesthetic rooted in 
 - **Hover State:** Box shadow `0 8px 20px rgba(0, 0, 0, 0.12)`
 
 #### Case Study Container
+
 - **Background:** `rgba(1, 64, 70, 0.4)` (Transparent teal)
 - **Text Color:** `#FFFFFF` (White)
 - **Font Size:** `19.2px`
@@ -308,6 +323,7 @@ Euricom's design system embodies a bold, technology-forward aesthetic rooted in 
 ### Inputs & Forms
 
 #### Text Input (default)
+
 - **Background:** `#014046` (Teal Dark)
 - **Text Color:** `#FFFFFF` (White)
 - **Font Size:** `19.2px`
@@ -322,22 +338,26 @@ Euricom's design system embodies a bold, technology-forward aesthetic rooted in 
 - **Placeholder Text:** `rgba(255, 255, 255, 0.5)`
 
 #### Text Input (hover)
+
 - **Background:** `#014046` (Teal Dark)
 - **Border:** `1px solid rgba(0, 255, 0, 0.5)` (increased opacity)
 - **Box Shadow:** `inset 0 1px 3px rgba(0, 0, 0, 0.3)`
 
 #### Text Input (error)
+
 - **Background:** `#014046` (Teal Dark)
 - **Border:** `1px solid #DD23BB` (magenta for error)
 - **Box Shadow:** `inset 0 1px 3px rgba(0, 0, 0, 0.2), 0 0 0 3px rgba(221, 35, 187, 0.1)`
 
 #### Text Input (disabled)
+
 - **Background:** `rgba(1, 64, 70, 0.5)` (faded teal)
 - **Text Color:** `rgba(255, 255, 255, 0.5)` (reduced opacity)
 - **Border:** `1px solid rgba(0, 255, 0, 0.15)`
 - **Cursor:** `not-allowed`
 
 #### Label
+
 - **Font Size:** `16px`
 - **Font Weight:** `500`
 - **Line Height:** `25.6px`
@@ -348,6 +368,7 @@ Euricom's design system embodies a bold, technology-forward aesthetic rooted in 
 ### Navigation
 
 #### Top Navigation Bar
+
 - **Background:** `#014046` (Teal Dark)
 - **Text Color:** `#FFFFFF` (White)
 - **Font Size:** `19.2px`
@@ -359,6 +380,7 @@ Euricom's design system embodies a bold, technology-forward aesthetic rooted in 
 - **Border:** `none`
 
 #### Navigation Link (default)
+
 - **Text Color:** `#FFFFFF` (White)
 - **Font Size:** `19.2px`
 - **Font Weight:** `400`
@@ -368,10 +390,12 @@ Euricom's design system embodies a bold, technology-forward aesthetic rooted in 
 - **Transition:** `color 0.3s ease`
 
 #### Navigation Link (hover)
+
 - **Text Color:** `#00FF00` (Lime Green)
 - **Background:** `rgba(0, 255, 0, 0.1)`
 
 #### Navigation Link (active)
+
 - **Text Color:** `#00FF00` (Lime Green)
 - **Border Bottom:** `2px solid #00FF00`
 - **Padding Bottom:** `6px`
@@ -379,6 +403,7 @@ Euricom's design system embodies a bold, technology-forward aesthetic rooted in 
 ### Badges
 
 #### Success Badge
+
 - **Background:** `rgba(0, 255, 0, 0.2)` (light green tint)
 - **Text Color:** `#00FF00` (Lime Green)
 - **Font Size:** `14px`
@@ -388,6 +413,7 @@ Euricom's design system embodies a bold, technology-forward aesthetic rooted in 
 - **Border:** `1px solid #00FF00`
 
 #### Info Badge
+
 - **Background:** `rgba(1, 64, 70, 0.4)` (teal tint)
 - **Text Color:** `#00FF00` (Lime Green)
 - **Font Size:** `14px`
@@ -403,6 +429,7 @@ Euricom's design system embodies a bold, technology-forward aesthetic rooted in 
 **Base Unit:** `8px`
 
 **Spacing Scale with Contexts:**
+
 - `8px`: Tight spacing within components, element-level gaps
 - `12px`: Small gaps between inline elements, button padding vertical
 - `16px`: Standard element padding, compact margins
@@ -417,6 +444,7 @@ Euricom's design system embodies a bold, technology-forward aesthetic rooted in 
 - `128px`: Maximum whitespace for visual separation and emphasis
 
 **Application Contexts:**
+
 - Component internal padding: `8px–24px`
 - Container padding: `24px–64px`
 - Section margins: `48px–128px` (vertical spacing between sections)
@@ -493,6 +521,7 @@ Shadows are minimal and intentional, serving to separate layered components rath
 | Large Desktop   | `1440px+`       | 4-column grid, `48px–64px` padding, full `1440px` width, `80px` section spacing |
 
 **Responsive Text Scaling:**
+
 - **H1 (Display):** `80px` (desktop) → `48px` (tablet) → `32px` (mobile)
 - **H2:** `64px` (desktop) → `40px` (tablet) → `28px` (mobile)
 - **H3:** `32px` (desktop) → `24px` (tablet) → `20px` (mobile)
@@ -509,6 +538,7 @@ Shadows are minimal and intentional, serving to separate layered components rath
 ### Collapsing Strategy
 
 **Mobile (320px–599px):**
+
 - Stack all cards and sections vertically (single column)
 - Reduce padding to `16px` for containers
 - Hide secondary navigation in hamburger menu
@@ -518,6 +548,7 @@ Shadows are minimal and intentional, serving to separate layered components rath
 - Reduce `80px` hero padding to `48px`
 
 **Tablet (600px–1023px):**
+
 - Switch to 2-column grid layout
 - Increase padding to `24px`
 - Show primary navigation inline; secondary in menu
@@ -526,6 +557,7 @@ Shadows are minimal and intentional, serving to separate layered components rath
 - Section padding: `64px` vertical
 
 **Desktop (1024px+):**
+
 - Activate full multi-column layouts (3–4 columns)
 - Restore full heading sizes
 - Standard padding and margins apply

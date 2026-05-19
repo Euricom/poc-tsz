@@ -26,7 +26,7 @@ Introduce a user management module mirroring the existing Animal module pattern:
 12. As an admin, I want to define a leave type with a name, an Allowed mode (Limited / Unlimited), a default total days, and a color, so that future users get the right starting point and the type is visually distinguishable in the UI.
 13. As an admin, I want every existing user to automatically gain a new leave row for the current year when I add a new leave type, so that I don't have to manually visit every user.
 14. As an admin, I want to edit a leave type's name, Allowed mode, default total days, and color, so that I can correct or evolve the catalog.
-15. As an admin, I want editing a leave type's default total days to *not* rewrite existing user allocations, so that historical data is preserved.
+15. As an admin, I want editing a leave type's default total days to _not_ rewrite existing user allocations, so that historical data is preserved.
 16. As an admin, I want to archive a leave type instead of deleting it, so that existing user rows referencing it remain intact.
 17. As an admin, I want archived leave types to still appear (clearly marked) on existing users' leave lists and remain editable, so that I can continue to record taken days through the rest of the year.
 18. As an admin, I want archived leave types to be excluded from backfills on new user creation, so that phased-out categories don't keep reappearing.
@@ -104,7 +104,7 @@ After the C# endpoints land, the frontend's typed client is refreshed with `bun 
 ### Seeding
 
 - **LeaveTypes** are seeded on first DB creation when the table is empty: `Verlof` (Limited, 20, `#3B82F6`), `ADV` (Limited, 5, `#10B981`), `Anciënniteit` (Limited, 0, `#8B5CF6`), `Ziekte` (Unlimited, `#EF4444`).
-- **Users** are *not* seeded. The list view starts empty.
+- **Users** are _not_ seeded. The list view starts empty.
 
 ### Frontend layout
 
@@ -130,7 +130,7 @@ The three deep services are the primary unit-test surfaces:
 
 - **`LeaveTypeService`**
   - Creating a leave type backfills a current-year `UserLeave` row for every existing user, using the new type's default total days.
-  - Editing a leave type does *not* alter any existing `UserLeave.TotalDays`.
+  - Editing a leave type does _not_ alter any existing `UserLeave.TotalDays`.
   - Deleting a leave type sets `IsArchived = true` and does not remove `UserLeave` rows.
   - The catalog list excludes archived types by default and includes them when asked.
   - Two non-archived types with the same name (case-insensitive) cannot coexist.

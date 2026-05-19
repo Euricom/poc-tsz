@@ -1,3 +1,4 @@
+using Api.Modules.Users;
 using Microsoft.EntityFrameworkCore;
 
 namespace Api.Modules.LeaveTypes;
@@ -39,6 +40,21 @@ public class LeaveTypeService
             Color = request.Color,
         };
         await _db.LeaveTypes.AddAsync(leaveType, ct);
+
+        var year = DateTime.UtcNow.Year;
+        var users = await _db.Users.ToListAsync(ct);
+        foreach (var user in users)
+        {
+            _db.UserLeaves.Add(new UserLeave
+            {
+                User = user,
+                LeaveType = leaveType,
+                Year = year,
+                TotalDays = leaveType.DefaultTotalDays,
+                TakenDays = 0,
+            });
+        }
+
         await _db.SaveChangesAsync(ct);
         return leaveType;
     }

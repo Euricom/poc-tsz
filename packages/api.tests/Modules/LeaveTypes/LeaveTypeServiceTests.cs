@@ -1,4 +1,5 @@
 using Api.Modules.LeaveTypes;
+using Api.Modules.Users;
 using Microsoft.EntityFrameworkCore;
 
 namespace Api.Tests;
@@ -183,5 +184,48 @@ public class LeaveTypeServiceTests
         var result = await service.ArchiveAsync(999);
 
         Assert.False(result);
+    }
+
+    [Fact]
+    public async Task Create_BackfillsUserLeaveForEachExistingUser()
+    {
+        var service = CreateService(out var context);
+        await context.Users.AddRangeAsync(
+            new User { Name = "Alice", Email = "alice@example.com", Role = Role.User },
+            new User { Name = "Bob", Email = "bob@example.com", Role = Role.Admin }
+        );
+        await context.SaveChangesAsync();
+
+        var request = new CreateLeaveTypeRequest
+        {
+            Name = "ADV",
+            Allowed = Allowed.Limited,
+            DefaultTotalDays = 5,
+            Color = "#000000",
+        };
+        await service.CreateAsync(request);
+
+        var userLeaves = await context.UserLeaves.ToListAsync();
+        Assert.Equal(2, userLeaves.Count);
+        Assert.All(userLeaves, ul => Assert.Equal(5, ul.TotalDays));
+        Assert.All(userLeaves, ul => Assert.Equal(0, ul.TakenDays));
+        Assert.All(userLeaves, ul => Assert.Equal(DateTime.UtcNow.Year, ul.Year));
+    }
+
+    [Fact]
+    public async Task Create_WithNoExistingUsers_CreatesLeaveTypeWithoutBackfill()
+    {
+        var service = CreateService(out var context);
+
+        var request = new CreateLeaveTypeRequest
+        {
+            Name = "Unlimited type",
+            Allowed = Allowed.Unlimited,
+            Color = "#000000",
+        };
+        await service.CreateAsync(request);
+
+        var userLeaves = await context.UserLeaves.ToListAsync();
+        Assert.Empty(userLeaves);
     }
 }

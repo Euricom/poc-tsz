@@ -13,17 +13,20 @@ Execute a complete unit of work: plan it, build it, validate it, commit it.
 
 ### 1. Understand the task
 
-If an issue file was passed as an argument, read it first — it is the source of truth for scope, acceptance criteria, and any references. Otherwise, read any referenced plan or PRD. Explore the codebase to understand the relevant files, patterns, and conventions. If the task is ambiguous, ask the user to clarify scope before proceeding.
+If an issue file was passed as an argument, read it first — it is the source of truth for scope, acceptance criteria, and any references. Otherwise, abort the skill and ask the user to provide an issue file.
 
-### 2. Plan the implementation (optional)
+Then explore the codebase to understand the relevant files, patterns, and conventions. Delegate codebase exploration beyond ~3 greps to the built-in `Explore` agent to keep context light.
 
-If the task has not already been planned, create a plan for it. Suggest to the user to start a grill session to plan the work.
+If the task is ambiguous, ask the user to clarify scope before proceeding.
 
 ### 2. Implement
 
 Work through the plan step by step.
 
-### 4. Validate
+If context gets heavy mid-slice, checkpoint to `.scratch/<feature-slug>/progress.md` and suggest the user `/clear` to resume. 
+Only do this under real context pressure.
+
+### 3. Validate
 
 Run the feedback loops and fix any issues. Repeat until all pass cleanly.
 
@@ -33,7 +36,7 @@ bun run test:web  # runs frontend unit tests
 bun run test:api  # runs backend unit tests
 ```
 
-### 5. Commit
+### 4. Commit
 
 Once static analysis and tests pass
 

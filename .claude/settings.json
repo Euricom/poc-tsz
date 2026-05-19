@@ -17,8 +17,8 @@
       "Read(**/build/**)",
       "Read(**/bin/**)",
       "Read(**/obj/**)",
-      "Bash(cat .env:*)", 
-      "Edit(**/.env)", 
+      "Bash(cat .env:*)",
+      "Edit(**/.env)",
       "Write(**/.env)"
     ]
   },
@@ -36,9 +36,16 @@
         ]
       }
     ],
-    "PostToolUse": [{
-      "matcher": "Edit|Write",
-      "hooks": [{ "type": "command", "command": "cd packages/web && out=$(bun check 2>&1) || echo \"$out\"" }]
-    }]
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "fp=$(jq -r '.tool_input.file_path // empty'); echo \"$fp\" | grep -q '/packages/web/' && { out=$(bun vp check --fix \"$fp\" 2>&1) || echo \"$out\"; }"
+          }
+        ]
+      }
+    ]
   }
 }

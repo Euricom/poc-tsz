@@ -3,7 +3,6 @@ using System.Text.Json.Serialization;
 using Api.Common.Extensions;
 using Api.Modules.Animals;
 using Api.Modules.LeaveTypes;
-using Api.Modules.Users;
 using DotNetEnv;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Hosting.Server.Features;
@@ -32,7 +31,6 @@ builder.Services.AddDbContext<UsersDbContext>(o =>
         x => x.MigrationsHistoryTable("__EFMigrationsHistory_Users")
                .MigrationsAssembly("api")));
 builder.Services.AddScoped<LeaveTypeService>();
-builder.Services.AddScoped<UserService>();
 
 var app = builder.Build();
 app.EnsureAnimalDbSeeded();
@@ -52,7 +50,6 @@ app.MapGet("/", () => new
 
 AnimalEndpoints.Map(app);
 LeaveTypeEndpoints.Map(app);
-UserEndpoints.Map(app);
 
 app.Lifetime.ApplicationStarted.Register(() =>
 {

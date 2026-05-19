@@ -41,9 +41,6 @@ function AuthedLayout() {
         <Link to="/admin/leave-types" className="[&.active]:font-bold">
           Leave Types
         </Link>
-        <Link to="/admin/users" className="[&.active]:font-bold">
-          Users
-        </Link>
         <div className="ml-auto">
           <ThemeToggle />
         </div>

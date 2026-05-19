@@ -1,9 +1,5 @@
 # Changelog
 
-## 2026-05-19 (latest)
-
-- feat(user-mgmt): implement User create + list with leave backfill (slice 02) — `User` entity (Name, Email unique case-insensitive, Role enum Admin/User/ClientManager) and `UserLeave` entity (UserId FK cascade, LeaveTypeId FK, Year, TotalDays nullable, TakenDays) added to `UsersDbContext`; `UserService.CreateAsync` atomically writes the user row plus one `UserLeave` per non-archived `LeaveType` in a single `SaveChangesAsync`; `LeaveTypeService.CreateAsync` extended to backfill one `UserLeave` per existing user when a new type is created; `GET /api/users` and `POST /api/users` endpoints both require auth; response DTO embeds `leaves[]` with `BalanceDays` computed as `TotalDays − TakenDays` (null for Unlimited); 10 unit tests (backfill set, archived exclusion, email uniqueness, cross-module backfill) and 5 integration tests; frontend `/admin/users` route with DataTable and Add dialog backed by co-located Zod schema + UserForm; `gen:api` run; migration `AddUsersAndUserLeaves` with COLLATE NOCASE email uniqueness index
-
 ## 2026-05-19
 
 - chore(agents): add `do-work` and `do-work-tdd` skills that drive a unit of work end-to-end (plan → implement → validate via `bun run check`/`test:web`/`test:api` → CHANGELOG update → commit); `do-work-tdd` adds red/green/refactor for backend code

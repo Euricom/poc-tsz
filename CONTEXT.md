@@ -13,7 +13,7 @@ A globally-defined leave category in the admin catalog. Has a `Name`, an `Allowe
 _Avoid_: LeaveCategory, LeaveKind.
 
 **UserLeave**:
-A user's allocation of a specific `LeaveType` for a specific year. Owns the editable totals (`TotalDays`, `TakenDays`); reads its `Name`, `Allowed`, and `Color` through its `LeaveType`.
+A user's allocation of a specific `LeaveType` for a specific year. Owns the editable totals (`TotalDays`, `TakenDays`); reads its `Name`, `Allowed`, `Color`, and `IsArchived` through its `LeaveType`.
 _Avoid_: UserLeaveAllocation, LeaveEntry (which would suggest a time-entry record, not a yearly bucket).
 
 **Allowed**:

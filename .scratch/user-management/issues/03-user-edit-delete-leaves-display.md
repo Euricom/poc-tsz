@@ -15,15 +15,16 @@ Backend:
 - `UserService` gains update and delete. Update changes only `Name` / `Email` / `Role` with no leaf-related side effects. Delete cascades to `UserLeave` rows (already DB-enforced from slice 02).
 - Endpoints, both `RequireAuthorization()`:
   - `GET /api/users/{id}` → `User` with embedded `leaves[]`.
-  - `PUT /api/users/{id}` → updated `User` (no embedded leaves changes).
+  - `PUT /api/users/{id}` → updated `User` with embedded `leaves[]` (same `UserResponse` shape as `GET`; leave values are unchanged).
   - `DELETE /api/users/{id}` → `NoContent`.
-- Same DTO projection rules as slice 02: `Name` and `Allowed` projected from the `LeaveType` relationship; `BalanceDays` computed; `null` for Unlimited.
+- Same DTO projection rules as slice 02: `Name`, `Allowed`, `Color`, and `IsArchived` projected from the `LeaveType` relationship; `BalanceDays` computed; `null` for Unlimited. (`IsArchived` was added to `UserLeaveResponse` in slice 02 — no DTO change needed here.)
 
 Frontend:
 
+- Add `onRowClick={(row) => navigate({ to: '/admin/users/$id', params: { id: String(row.id) } })}` to the users DataTable in `routes/_authed/admin/users/index.tsx` (omitted in slice 02 because the route didn't exist yet).
 - New `/admin/users/{id}` route under `_authed/` with:
   - A form to edit `Name` / `Email` / `Role`.
-  - A leaves table grouped per year (currently only the current year exists), displaying `Name`, `Allowed`, `TotalDays`, `TakenDays`, `BalanceDays`. **Read-only in this slice**; no row actions yet.
+  - A flat leaves table (no year grouping — year rollover is out of scope) displaying a color swatch (`Color`), `Name`, `Allowed`, `TotalDays`, `TakenDays`, `BalanceDays`. **Read-only in this slice**; no row actions yet.
   - Unlimited rows render with `TotalDays` and `BalanceDays` blank (or a clear "—") rather than showing meaningless numbers.
   - Rows whose `LeaveType.IsArchived = true` render with a visible "archived" hint but remain in the list.
 - Delete button on the edit page with a confirmation step.

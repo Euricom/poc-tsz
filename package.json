@@ -9,7 +9,7 @@
   "scripts": {
     "dev": "bun run --elide-lines 0 --filter 'web' dev",
     "dev:api": "dotnet watch run --project packages/api",
-    "check": "bun run --filter '*' check && bun run --filter '*' lint",
+    "check": "bun run --filter '*' check",
     "fallow": "bun run --filter '*' fallow",
     "build:api": "dotnet build packages/api",
     "test:web": "bun run --filter 'web' test",

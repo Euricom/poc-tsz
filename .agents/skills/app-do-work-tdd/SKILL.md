@@ -37,7 +37,19 @@ bun run test:web  # runs frontend unit tests
 bun run test:api  # runs backend unit tests
 ```
 
-### 4. Commit
+### 4. Simplify
+
+Run `Skill('simplify')` to simplify the code.
+
+Run the validation loops again and fix any issues. Repeat until all pass cleanly.
+
+```bash
+bun run check     # static analysis of Typescript code with linting, typechecking, and formatting
+bun run test:web  # runs frontend unit tests
+bun run test:api  # runs backend unit tests
+```
+
+### 5. Commit
 
 Once static analysis and tests pass
 

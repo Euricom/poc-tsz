@@ -2,6 +2,7 @@
 
 ## 2026-05-20
 
+- feat(user-mgmt): leave type create and edit now use dedicated pages (`/admin/leave-types/new` and `/admin/leave-types/:id`) instead of a modal; clicking a row in the list navigates to the edit page; archive and unarchive actions are on the edit page
 - fix(hooks): PostToolUse now runs `bunx vp check --fix` on `Edit`/`Write` only when the file is under `packages/web/`; lint failures exit 2 so errors surface back to the agent, edits elsewhere are a silent no-op
 
 ## 2026-05-19

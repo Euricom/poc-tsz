@@ -27,9 +27,6 @@ Work through the plan step by step.
 
 **Frontend code** (`packages/web/**`): implement directly without TDD.
 
-If context gets heavy mid-slice, checkpoint to `.scratch/<feature-slug>/progress.md` and suggest the user `/clear` to resume. 
-Only do this under real context pressure.
-
 ### 3. Validate
 
 Run the feedback loops and fix any issues. Repeat until all pass cleanly.

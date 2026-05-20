@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-05-20
+
+- fix(hooks): PostToolUse now runs `bunx vp check --fix` on `Edit`/`Write` only when the file is under `packages/web/`; lint failures exit 2 so errors surface back to the agent, edits elsewhere are a silent no-op
+
 ## 2026-05-19
 
 - chore(agents): add `do-work` and `do-work-tdd` skills that drive a unit of work end-to-end (plan → implement → validate via `bun run check`/`test:web`/`test:api` → CHANGELOG update → commit); `do-work-tdd` adds red/green/refactor for backend code
@@ -8,7 +12,7 @@
 
 ## 2026-05-18
 
-- refactor(web): centralize env vars in `src/env.ts` — Zod schema validates `SERVER_URL`, `APP_BASE_URL`, `AUTH_TENANT_ID`, `AUTH_CLIENT_ID`, `AUTH_CLIENT_SECRET`, `AUTH_SECRET` at startup; `auth.server.ts` and `api/client.ts` replaced all `process.env.*` references with typed `env.*` imports; removed intermediate constant aliases in `auth.server.ts` so `env.*` is used directly at each call site
+- refactor(web): centralize env vars in `src/env.ts`
 
 ## 2026-05-16
 

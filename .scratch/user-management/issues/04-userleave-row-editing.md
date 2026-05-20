@@ -23,7 +23,7 @@ Backend:
     @path id: int32,
     @path leaveId: int32,
     @body body: UpdateUserLeaveRequest
-  ): UserLeaveResponse;
+  ): UserLeave;
 }
 ```
 

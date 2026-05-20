@@ -113,15 +113,15 @@ enum Allowed { Limited, Unlimited }
 
 // ── Response models ──────────────────────────────────────────────────────────
 
-model UserResponse {
+model User {
   id: int32;
   @maxLength(100) name: string;
   @maxLength(200) email: string;
   role: Role;
-  leaves: UserLeaveResponse[];
+  leaves: UserLeave[];
 }
 
-model UserLeaveResponse {
+model UserLeave {
   id: int32;
   leaveTypeId: int32;
   year: int32;
@@ -134,7 +134,7 @@ model UserLeaveResponse {
   isArchived: boolean;  // projected from LeaveType
 }
 
-model LeaveTypeResponse {
+model LeaveType {
   id: int32;
   name: string;
   allowed: Allowed;
@@ -180,16 +180,16 @@ model UpdateLeaveTypeRequest {
 
 @route("/api/users")
 namespace Users {
-  @get op list(): UserResponse[];
+  @get op list(): User[];
 
   @post op create(@body body: CreateUserRequest): {
     @statusCode _: 201;
-    @body user: UserResponse;
+    @body user: User;
   };
 
   @route("/{id}") {
-    @get    op get(@path id: int32): UserResponse;
-    @put    op update(@path id: int32, @body body: UpdateUserRequest): UserResponse;
+    @get    op get(@path id: int32): User;
+    @put    op update(@path id: int32, @body body: UpdateUserRequest): User;
     @delete op delete(@path id: int32): void;
 
     @route("/leaves/{leaveId}") {
@@ -197,22 +197,22 @@ namespace Users {
         @path id: int32,
         @path leaveId: int32,
         @body body: UpdateUserLeaveRequest
-      ): UserLeaveResponse;
+      ): UserLeave;
     }
   }
 }
 
 @route("/api/leave-types")
 namespace LeaveTypes {
-  @get op list(@query includeArchived?: boolean): LeaveTypeResponse[];
+  @get op list(@query includeArchived?: boolean): LeaveType[];
 
   @post op create(@body body: CreateLeaveTypeRequest): {
     @statusCode _: 201;
-    @body leaveType: LeaveTypeResponse;
+    @body leaveType: LeaveType;
   };
 
   @route("/{id}") {
-    @put    op update(@path id: int32, @body body: UpdateLeaveTypeRequest): LeaveTypeResponse;
+    @put    op update(@path id: int32, @body body: UpdateLeaveTypeRequest): LeaveType;
     @delete op delete(@path id: int32): void;
   }
 }

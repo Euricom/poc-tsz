@@ -22,11 +22,11 @@ Backend:
 ```typespec
 @route("/api/users")
 namespace Users {
-  @get op list(): UserResponse[];
+  @get op list(): User[];
 
   @post op create(@body body: CreateUserRequest): {
     @statusCode _: 201;
-    @body user: UserResponse;
+    @body user: User;
   };
 }
 ```
@@ -46,7 +46,7 @@ Scope notes: this slice does NOT include the user edit page, delete, the per-row
 ## Acceptance criteria
 
 - [ ] Migration adds `User` and `UserLeave` tables to `UsersDbContext` with the FK + unique constraints described.
-- [ ] `POST /api/users` returns the created user with one `UserLeave` per non-archived `LeaveType`, all tagged with the current year, `TotalDays` matching the type's `DefaultTotalDays` (`null` for Unlimited), `TakenDays = 0`. Each `UserLeaveResponse` includes `Id`, `Name`, `Allowed`, `Color`, `IsArchived`, `TotalDays`, `TakenDays`, `BalanceDays`.
+- [ ] `POST /api/users` returns the created user with one `UserLeave` per non-archived `LeaveType`, all tagged with the current year, `TotalDays` matching the type's `DefaultTotalDays` (`null` for Unlimited), `TakenDays = 0`. Each `UserLeave` includes `Id`, `Name`, `Allowed`, `Color`, `IsArchived`, `TotalDays`, `TakenDays`, `BalanceDays`.
 - [ ] Creating a `LeaveType` (slice 01's endpoint) now also inserts one `UserLeave` per existing user for the current year using the new type's defaults — observable through a subsequent `GET /api/users`.
 - [ ] Two users cannot share the same email (case-insensitive).
 - [ ] Archived `LeaveType`s are excluded from the user-create backfill.

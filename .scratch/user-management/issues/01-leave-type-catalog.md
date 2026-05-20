@@ -21,15 +21,15 @@ Backend:
 ```typespec
 @route("/api/leave-types")
 namespace LeaveTypes {
-  @get op list(@query includeArchived?: boolean): LeaveTypeResponse[];
+  @get op list(@query includeArchived?: boolean): LeaveType[];
 
   @post op create(@body body: CreateLeaveTypeRequest): {
     @statusCode _: 201;
-    @body leaveType: LeaveTypeResponse;
+    @body leaveType: LeaveType;
   };
 
   @route("/{id}") {
-    @put    op update(@path id: int32, @body body: UpdateLeaveTypeRequest): LeaveTypeResponse;
+    @put    op update(@path id: int32, @body body: UpdateLeaveTypeRequest): LeaveType;
     @delete op delete(@path id: int32): void;  // soft-delete: sets IsArchived = true
   }
 }

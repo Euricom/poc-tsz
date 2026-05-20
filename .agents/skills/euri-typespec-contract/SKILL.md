@@ -26,6 +26,15 @@ For full TypeSpec syntax, types, decorators, and patterns — read `references/t
 - Response shapes and status codes
 - Keep models minimal — only the fields the feature actually needs
 
+## Naming
+
+- **Response models use the resource name.** `User`, `LeaveType`, `UserLeave`. Never suffix with `Response` — there is no `UserResponse`, no `LeaveTypeResponse`. The model that comes back from `GET /api/users/{id}` is `User`, full stop.
+- **Request models use action + resource + `Request`.** `CreateUserRequest`, `UpdateUserRequest`, `UpdateUserLeaveRequest`. The `Request` suffix stays; it disambiguates the inbound shape from the resource it acts on.
+- **Enums use the singular concept name.** `Role`, `Allowed`, `Status`. No `Enum` suffix.
+- Endpoint result-wrapper field names match the resource (`@body user: User;`, `@body leaveType: LeaveType;`), so the JSON shape reads `{ "user": { ... } }` / `{ "leaveType": { ... } }`.
+
+This naming flows through unchanged into the OpenAPI document and the generated TypeScript client, so the FE consumes `User` / `LeaveType` directly. Code reviewers should reject any new TypeSpec block that introduces a `*Response` type.
+
 ## Example
 
 ```typespec

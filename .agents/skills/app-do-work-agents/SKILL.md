@@ -27,7 +27,7 @@ If the task is ambiguous, ask the user to clarify scope before proceeding.
 
 If there is no TypeSpec contract (pure UI work, refactor, bug fix), work through the plan step by step in a single pass/agent.
 
-Otherwise, use it as the shared source of truth and spawn an 3 agent team to implement the backend and frontend in parallel.
+Otherwise, use it as the shared source of truth and spawn an 3 agent team to implement the backend and frontend in parallel. Use sonnet model with high effort for the agents.
 
 - First one will implement the backend, implemening the endpoints defined in the contract; route paths, verbs, request/response shapes, and status codes must match exactly. After implementation run the following validation steps:
 

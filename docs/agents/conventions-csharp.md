@@ -24,6 +24,11 @@
 - Integration tests boot the full app via `WebApplicationFactory<Program>`, which runs the production seeders. Every integration test starts with the 4 default LeaveTypes already present (and any future seeded data).
 - Assert on `seeded + delta`, not absolute counts. Tests that assume an empty DB will be flaky as soon as a new seeder is added.
 
+## EF Core entity operations
+
+- Don't `await DbSet<T>.AddAsync(...)` in a loop. `AddAsync` is only meaningful for value generators that need a DB round-trip (HiLo); SQLite autoincrement does not. For bulk inserts use `AddRangeAsync(items)` with a `Select(...)` projection; for a single insert plain `Add(...)` is fine.
+- Don't null-coalesce on a required EF navigation property after `.Include(...)`. If the nav is declared `Type Nav { get; set; } = null!;` and the query Includes it, treat it as non-null in projection code (`leave.LeaveType.Name`, not `leave.LeaveType?.Name ?? ""`). The `?? fallback` is unreachable and hides bugs if the Include is later dropped.
+
 ## API contract DTOs
 
 - Endpoints always return an explicit DTO defined in `*Contracts.cs`, never the EF entity directly — even when the shape is 1:1 with the entity. This decouples the wire format from storage and gives derived fields (e.g. `BalanceDays`) a home. The service does the entity → DTO projection.

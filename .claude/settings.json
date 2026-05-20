@@ -23,7 +23,8 @@
     ]
   },
   "env": {
-    "ENABLE_TOOL_SEARCH": "auto"
+    "ENABLE_TOOL_SEARCH": "auto",
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
   },
   "hooks": {
     "WorktreeCreate": [

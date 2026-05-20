@@ -16,12 +16,26 @@ Backend:
 - `LeaveType` entity (`Id`, `Name`, `Allowed` enum (`Limited | Unlimited`), `DefaultTotalDays` (nullable int; `null` when Unlimited), `Color` (7-character hex string, `#RRGGBB`; required, max length 7), `IsArchived` bool default false) with EF configuration enforcing uniqueness of `Name` (case-insensitive) among non-archived rows. `Color` is validated on the request DTO via a regex (`^#[0-9A-Fa-f]{6}$`).
 - Seeder that, on first DB creation when the `LeaveType` table is empty, inserts the four defaults: `Verlof` (Limited, 20, `#3B82F6`), `ADV` (Limited, 5, `#10B981`), `Anciënniteit` (Limited, 0, `#8B5CF6`), `Ziekte` (Unlimited, `#EF4444`).
 - `LeaveTypeService` (deep module) with: list (default excludes archived; `includeArchived` flips that), create, edit (name / allowed / default total days / color — must NOT touch any existing `UserLeave`), and archive-on-delete (soft delete sets `IsArchived = true`, never hard-deletes).
-- Endpoints, all `RequireAuthorization()`:
-  - `GET /api/leave-types?includeArchived=...` → `LeaveType[]`
-  - `POST /api/leave-types` → created `LeaveType`
-  - `PUT /api/leave-types/{id}` → updated `LeaveType`
-  - `DELETE /api/leave-types/{id}` → `NoContent` (soft-delete)
-- Validation via the existing `ValidationFilter<T>` pattern; request DTOs carry length/range attributes.
+- Endpoints, all `RequireAuthorization()`. Validation via the existing `ValidationFilter<T>` pattern; request DTOs carry length/range/pattern attributes.
+
+```typespec
+@route("/api/leave-types")
+namespace LeaveTypes {
+  @get op list(@query includeArchived?: boolean): LeaveTypeResponse[];
+
+  @post op create(@body body: CreateLeaveTypeRequest): {
+    @statusCode _: 201;
+    @body leaveType: LeaveTypeResponse;
+  };
+
+  @route("/{id}") {
+    @put    op update(@path id: int32, @body body: UpdateLeaveTypeRequest): LeaveTypeResponse;
+    @delete op delete(@path id: int32): void;  // soft-delete: sets IsArchived = true
+  }
+}
+```
+
+Full model definitions: see `.scratch/user-management/PRD.md` — REST API Contract.
 
 Frontend:
 

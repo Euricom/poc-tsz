@@ -81,23 +81,9 @@ The endpoint files are intentionally thin (HTTP plumbing only) and not deep modu
 
 ### API contracts
 
-All endpoints require `RequireAuthorization()`. Same convention as the Animals module (auth can be disabled via the existing `Auth:Disabled` config key for local development).
+All endpoints require `RequireAuthorization()`. Same convention as the Animals module (auth can be disabled via the existing `Auth:Disabled` config key for local development). Validation uses the same `ValidationFilter<T>` pattern that Animals uses; range/length/pattern attributes live on the request DTOs.
 
-```
-GET    /api/users                            → User[]                      (each with embedded leaves[])
-GET    /api/users/{id}                       → User                        (with embedded leaves[])
-POST   /api/users                            → User                        (Created; backfills leaves atomically)
-PUT    /api/users/{id}                       → User                        (Name / Email / Role only)
-DELETE /api/users/{id}                       → NoContent                   (cascades to UserLeaves)
-PUT    /api/users/{id}/leaves/{leaveId}      → UserLeave                   (TotalDays + TakenDays only)
-
-GET    /api/leave-types?includeArchived=...  → LeaveType[]                 (default excludes archived)
-POST   /api/leave-types                      → LeaveType                   (Created; backfills UserLeaves for all users for current year)
-PUT    /api/leave-types/{id}                 → LeaveType                   (Name / Allowed / DefaultTotalDays / Color)
-DELETE /api/leave-types/{id}                 → NoContent                   (soft-delete: sets IsArchived)
-```
-
-The `User` and `UserLeave` response DTOs project `Name`, `Allowed`, and `Color` from the `LeaveType` relationship and compute `BalanceDays`. Validation uses the same `ValidationFilter<T>` pattern that Animals uses; range/length attributes live on the request DTOs. `Color` is validated as a 7-character `#RRGGBB` hex string (regex), required on create.
+See the canonical contract in [REST API Contract](#rest-api-contract) below.
 
 After the C# endpoints land, the frontend's typed client is refreshed with `bun run gen:api` (required step per `packages/api/CLAUDE.md`).
 
@@ -117,6 +103,120 @@ A new `/admin` segment is added under the existing `_authed/` layout:
 - API client modules: `src/api/users.ts` and `src/api/leave-types.ts`, using the generated client.
 
 Archived `LeaveType` rows shown on the user edit page render with a visible "archived" hint but remain editable.
+
+## REST API Contract
+
+```typespec
+enum Role { Admin, User, ClientManager }
+
+enum Allowed { Limited, Unlimited }
+
+// ── Response models ──────────────────────────────────────────────────────────
+
+model UserResponse {
+  id: int32;
+  @maxLength(100) name: string;
+  @maxLength(200) email: string;
+  role: Role;
+  leaves: UserLeaveResponse[];
+}
+
+model UserLeaveResponse {
+  id: int32;
+  leaveTypeId: int32;
+  year: int32;
+  totalDays?: int32;    // null when LeaveType.Allowed is Unlimited
+  takenDays: int32;
+  balanceDays?: int32;  // derived: totalDays − takenDays; null when Unlimited
+  name: string;         // projected from LeaveType
+  allowed: Allowed;     // projected from LeaveType
+  @pattern("^#[0-9A-Fa-f]{6}$") color: string;  // projected from LeaveType
+  isArchived: boolean;  // projected from LeaveType
+}
+
+model LeaveTypeResponse {
+  id: int32;
+  name: string;
+  allowed: Allowed;
+  defaultTotalDays?: int32;
+  @pattern("^#[0-9A-Fa-f]{6}$") color: string;
+  isArchived: boolean;
+}
+
+// ── Request models ───────────────────────────────────────────────────────────
+
+model CreateUserRequest {
+  @maxLength(100) name: string;
+  @maxLength(200) email: string;
+  role: Role;
+}
+
+model UpdateUserRequest {
+  @maxLength(100) name: string;
+  @maxLength(200) email: string;
+  role: Role;
+}
+
+model UpdateUserLeaveRequest {
+  totalDays?: int32;
+  takenDays: int32;
+}
+
+model CreateLeaveTypeRequest {
+  @minLength(1) name: string;
+  allowed: Allowed;
+  defaultTotalDays?: int32;  // required when allowed is Limited
+  @pattern("^#[0-9A-Fa-f]{6}$") color: string;
+}
+
+model UpdateLeaveTypeRequest {
+  @minLength(1) name: string;
+  allowed: Allowed;
+  defaultTotalDays?: int32;
+  @pattern("^#[0-9A-Fa-f]{6}$") color: string;
+}
+
+// ── Endpoints ────────────────────────────────────────────────────────────────
+
+@route("/api/users")
+namespace Users {
+  @get op list(): UserResponse[];
+
+  @post op create(@body body: CreateUserRequest): {
+    @statusCode _: 201;
+    @body user: UserResponse;
+  };
+
+  @route("/{id}") {
+    @get    op get(@path id: int32): UserResponse;
+    @put    op update(@path id: int32, @body body: UpdateUserRequest): UserResponse;
+    @delete op delete(@path id: int32): void;
+
+    @route("/leaves/{leaveId}") {
+      @put op updateLeave(
+        @path id: int32,
+        @path leaveId: int32,
+        @body body: UpdateUserLeaveRequest
+      ): UserLeaveResponse;
+    }
+  }
+}
+
+@route("/api/leave-types")
+namespace LeaveTypes {
+  @get op list(@query includeArchived?: boolean): LeaveTypeResponse[];
+
+  @post op create(@body body: CreateLeaveTypeRequest): {
+    @statusCode _: 201;
+    @body leaveType: LeaveTypeResponse;
+  };
+
+  @route("/{id}") {
+    @put    op update(@path id: int32, @body body: UpdateLeaveTypeRequest): LeaveTypeResponse;
+    @delete op delete(@path id: int32): void;
+  }
+}
+```
 
 ## Testing Decisions
 

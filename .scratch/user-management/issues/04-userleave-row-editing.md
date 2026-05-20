@@ -16,7 +16,18 @@ Backend:
 - The service returns a not-found-style result when the addressed row does not belong to the given user; the endpoint maps that to `404`.
 - Year and FKs are never modified by this path.
 - Endpoint, `RequireAuthorization()`:
-  - `PUT /api/users/{id}/leaves/{leaveId}` → updated `UserLeave`.
+
+```typespec
+@route("/api/users/{id}/leaves/{leaveId}") {
+  @put op updateLeave(
+    @path id: int32,
+    @path leaveId: int32,
+    @body body: UpdateUserLeaveRequest
+  ): UserLeaveResponse;
+}
+```
+
+Full model definitions: see `.scratch/user-management/PRD.md` — REST API Contract.
 
 Frontend:
 

@@ -17,11 +17,21 @@ Backend:
 - New migration on `UsersDbContext` for both tables.
 - `UserService` (deep module) with create: atomically writes the user row plus one `UserLeave` per **non-archived** `LeaveType`, tagged with `DateTime.UtcNow.Year`, `TotalDays = LeaveType.DefaultTotalDays` (so `null` for Unlimited), `TakenDays = 0`. The user and the backfilled rows commit in a single `SaveChangesAsync`; if backfill fails the user is not persisted.
 - `LeaveTypeService.Create` extended: after inserting the new type, write one `UserLeave` per existing user for the current year, `TotalDays = DefaultTotalDays`, `TakenDays = 0`. Same single-transaction guarantee.
-- Endpoints, both `RequireAuthorization()`:
-  - `GET /api/users` → `User[]`, each with embedded `leaves[]`.
-  - `POST /api/users` → created `User` with embedded `leaves[]`.
-- Response DTO projects each `UserLeave.Name`, `Allowed`, `Color`, and `IsArchived` through its `LeaveType` relationship and computes `BalanceDays` (`Total − Taken`; `null` when Unlimited). Nothing is stored that the DTO derives.
-- Validation via the existing `ValidationFilter<T>` pattern.
+- Endpoints, both `RequireAuthorization()`. Response DTO projects each `UserLeave.Name`, `Allowed`, `Color`, and `IsArchived` through its `LeaveType` relationship and computes `BalanceDays` (`Total − Taken`; `null` when Unlimited). Nothing is stored that the DTO derives. Validation via the existing `ValidationFilter<T>` pattern.
+
+```typespec
+@route("/api/users")
+namespace Users {
+  @get op list(): UserResponse[];
+
+  @post op create(@body body: CreateUserRequest): {
+    @statusCode _: 201;
+    @body user: UserResponse;
+  };
+}
+```
+
+Full model definitions: see `.scratch/user-management/PRD.md` — REST API Contract.
 
 Frontend:
 

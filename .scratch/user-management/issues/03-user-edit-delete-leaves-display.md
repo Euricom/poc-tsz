@@ -13,11 +13,17 @@ Close out the user-level CRUD surface and surface each user's leave allocations 
 Backend:
 
 - `UserService` gains update and delete. Update changes only `Name` / `Email` / `Role` with no leaf-related side effects. Delete cascades to `UserLeave` rows (already DB-enforced from slice 02).
-- Endpoints, both `RequireAuthorization()`:
-  - `GET /api/users/{id}` → `User` with embedded `leaves[]`.
-  - `PUT /api/users/{id}` → updated `User` with embedded `leaves[]` (same `UserResponse` shape as `GET`; leave values are unchanged).
-  - `DELETE /api/users/{id}` → `NoContent`.
-- Same DTO projection rules as slice 02: `Name`, `Allowed`, `Color`, and `IsArchived` projected from the `LeaveType` relationship; `BalanceDays` computed; `null` for Unlimited. (`IsArchived` was added to `UserLeaveResponse` in slice 02 — no DTO change needed here.)
+- Endpoints, all `RequireAuthorization()`. Same DTO projection rules as slice 02: `Name`, `Allowed`, `Color`, and `IsArchived` projected from the `LeaveType` relationship; `BalanceDays` computed; `null` for Unlimited. (`IsArchived` was added to `UserLeaveResponse` in slice 02 — no DTO change needed here.)
+
+```typespec
+@route("/api/users/{id}") {
+  @get    op get(@path id: int32): UserResponse;
+  @put    op update(@path id: int32, @body body: UpdateUserRequest): UserResponse;
+  @delete op delete(@path id: int32): void;
+}
+```
+
+Full model definitions: see `.scratch/user-management/PRD.md` — REST API Contract.
 
 Frontend:
 

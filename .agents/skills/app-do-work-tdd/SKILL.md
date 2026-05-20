@@ -1,8 +1,12 @@
 ---
 name: do-work-tdd
 description: Execute a unit of work end-to-end: plan, implement with tdd, validate with typecheck and tests, then commit. Use when user wants to do work, build a feature, fix a bug, or implement a phase from a plan.
-argument-hint: '[issue-file] — path to an issue markdown file.'
+argument-hint: '[issue-file] [--skip-commit] — path to an issue markdown file. Pass --skip-commit to skip CHANGELOG.md update and git commit.'
 disable-model-invocation: true
+license: MIT
+metadata:
+  author: euricom
+  version: "1.0.0"
 ---
 
 # Do Work (TDD)
@@ -50,6 +54,8 @@ bun run test:api  # runs backend unit tests
 ```
 
 ### 5. Commit
+
+Skip this step entirely if `--skip-commit` was passed as an argument.
 
 Once static analysis and tests pass
 

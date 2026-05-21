@@ -68,8 +68,8 @@ printf '%s───────────────────────�
 
 if [[ -n "${TMUX:-}" ]]; then
   trap - EXIT INT TERM
-  API_CMD="ASPNETCORE_URLS=http://localhost:$API_PORT dotnet watch run --project packages/api --no-launch-profile --non-interactive"
-  WEB_CMD="SERVER_URL=http://localhost:$API_PORT bunx vite --port $WEB_PORT --strictPort"
+  API_CMD="API_PORT=$API_PORT dotnet watch run --project packages/api --no-launch-profile --non-interactive"
+  WEB_CMD="WEB_PORT=$WEB_PORT SERVER_URL=http://localhost:$API_PORT bunx vite"
 
   WIN_ID="$(tmux new-window -P -F '#{window_id}' -n tsz -c "$REPO_ROOT/packages/web" "$WEB_CMD")"
   tmux split-window -v -t "$WIN_ID" -c "$REPO_ROOT" "$API_CMD"
@@ -80,7 +80,7 @@ if [[ -n "${TMUX:-}" ]]; then
 fi
 
 (
-  ASPNETCORE_URLS="http://localhost:$API_PORT" \
+  API_PORT="$API_PORT" \
     dotnet watch run --project packages/api --no-launch-profile --non-interactive 2>&1 \
     | prefix "$C_API" api
   kill 0 2>/dev/null || true
@@ -88,8 +88,9 @@ fi
 
 (
   cd packages/web
-  SERVER_URL="http://localhost:$API_PORT" \
-    bunx vite --port "$WEB_PORT" --strictPort 2>&1 \
+  WEB_PORT="$WEB_PORT" \
+    SERVER_URL="http://localhost:$API_PORT" \
+    bunx vite 2>&1 \
     | prefix "$C_WEB" web
   kill 0 2>/dev/null || true
 ) &

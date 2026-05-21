@@ -38,5 +38,8 @@ if [ -f "$INCLUDE" ]; then
   done < "$INCLUDE"
 fi
 
+# Claim ports for the new worktree
+"$ROOT/scripts/env-claim.sh" "$DIR" >&2
+
 # Return the worktree path to Claude Code
 echo "$DIR"

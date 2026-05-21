@@ -33,7 +33,7 @@ If the task is ambiguous, ask the user to clarify scope before proceeding.
 
 #### Parallel agent team (contract-first path)
 
-Spawn all three agents at once. Brief each with the issue file, the TypeSpec contract path, and the role below.
+Spin up an Agent Team with `TeamCreate`, 3 agents (Backend, Frontend, Contract Reconciliation). Brief each with the issue file, the TypeSpec contract path, and the role below.
 
 **Agent A — Backend**
 
@@ -73,9 +73,9 @@ bun run check     # confirm types still align
 
 ### 3. Simplify
 
-Run `Skill('simplify')` to simplify the code.
+Run `Skill('code-review')` to simplify the code. Use the high effort.
 
-Run the validation loops again and fix any issues. Repeat until all pass cleanly.
+Then run the validation loops again and fix any issues. Repeat until all pass cleanly.
 
 ```bash
 bun run check     # static analysis of Typescript code with linting, typechecking, and formatting

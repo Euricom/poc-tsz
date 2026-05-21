@@ -47,6 +47,7 @@
         ]
       }
     ],
+    "WorktreeRemove": [{ "hooks": [{ "type": "command", "command": "bash -l scripts/remove-worktree.sh" }] }],
     "PostToolUse": [
       {
         "matcher": "Edit|Write",

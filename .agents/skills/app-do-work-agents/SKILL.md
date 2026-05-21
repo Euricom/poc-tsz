@@ -108,6 +108,6 @@ After the work is committed (or skipped via `--skip-commit`), report back to the
 - A missing convention you had to infer (e.g. "API error responses use `{ code, message }`, not RFC 7807")
 - A pattern that wasted time and shouldn't next time
 - A non-obvious constraint in the codebase
-- Adjustments or simplifications performed with `/simplify`
+- Adjustments or simplifications performed with `/code-review`
 Make each item brief and precise. Focus on guidance a future agent should apply to prevent repeated errors or wasted time.
  

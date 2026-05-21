@@ -25,33 +25,51 @@ If the task is ambiguous, ask the user to clarify scope before proceeding.
 
 ### 2. Implement & validate
 
-If there is no TypeSpec contract (pure UI work, refactor, bug fix), work through the plan step by step in a single pass/agent.
+#### Decide the execution mode first
 
-Otherwise, use it as the shared source of truth and spawn an 3 agent team to implement the backend and frontend in parallel. Use sonnet model with high effort for the agents.
+- **No API changes** (pure UI work, refactor, bug fix, internal-only changes) → work through the plan step by step in a **single pass**, no agent team.
 
-- First one will implement the backend, implemening the endpoints defined in the contract; route paths, verbs, request/response shapes, and status codes must match exactly. After implementation run the following validation steps:
+- **API changes involved** (new/changed endpoints, request/response shapes, status codes) → these must be specified in a TypeSpec contract, which becomes the shared source of truth. Spawn a **3-agent team** (sonnet, high effort) to implement backend and frontend in parallel, then reconcile.
 
-```bash
-bun run test:api  # runs backend unit tests
-bun run test:api:int # runs backend integration tests
-```
+#### Parallel agent team (contract-first path)
 
-- Second one will implement the frontend, implement the API client calls and UI using the TypeSpec types directly — do not wait for the BE to emit an OpenAPI spec. Update the src/api/schema.ts file with future types. After implementation run the following validation steps:
+Spawn all three agents at once. Brief each with the issue file, the TypeSpec contract path, and the role below.
 
-```bash
-bun run check     # static analysis of Typescript code with linting, typechecking, and formatting
-bun run test:web  # runs frontend unit tests
-```
+**Agent A — Backend**
 
-- Third one will wait for the backend and frontend to be implemented, then generate the schema.ts again from the open api spec and validate the types are still correct. When there are type errors, see if the backend or the frontend is wrong and fix it by instructing the other agents to fix it. 
+- Implement the endpoints defined in the contract. Route paths, HTTP verbs, request/response shapes, and status codes **must match the contract exactly**.
+- Validate before reporting done:
 
 ```bash
-# generate the schema.ts file from the open api spec
-bun run gen:api
-
-# validate again the types are correct
-bun run check
+bun run test:api      # backend unit tests
+bun run test:api:int  # backend integration tests
 ```
+
+**Agent B — Frontend**
+
+- Implement the API client calls and UI using the TypeSpec types directly. Do not wait for the backend's OpenAPI spec.
+- Hand-write the expected types in src/api/schema.ts from the TypeSpec contract so the UI can compile in parallel. Agent C will overwrite this file later.
+- Validate before reporting done:
+
+```bash
+bun run check     # lint, typecheck, format
+bun run test:web  # frontend unit tests
+```
+
+**Agent C — Contract reconciliation**
+
+- Wait until both Agent A and Agent B report done.
+- Regenerate src/api/schema.ts from the backend's OpenAPI spec, then re-validate:
+
+```bash
+bun run gen:api   # regenerate schema.ts from runtime OpenAPI spec (API)
+bun run check     # confirm types still align
+```
+
+- If check fails, diagnose which side drifted from the contract:
+  - Backend wrong → send Agent A a fix instruction citing the specific mismatch.
+  - Frontend wrong → send Agent B a fix instruction citing the specific mismatch.
+  - Re-run gen:api + check after each round. Loop until clean.
 
 ### 3. Simplify
 
@@ -73,11 +91,23 @@ Skip this step entirely if `--skip-commit` was passed as an argument.
 Once static analysis and tests pass:
 
 - Update `CHANGELOG.md` under today's date with functional, user-facing bullet points. Each bullet answers "what can a user now do?" or "what behavior changed?" — not "what was built". No class/method names, no test counts, no migration names. Example:
-  - ✓ "Admins can view all users and create new ones via an Add dialog"
-  - ✓ "Creating a user automatically assigns a leave balance for each active leave type"
-  - ✗ "Added UserService.CreateAsync with single SaveChangesAsync and 10 unit tests"
+  - ✅ "Admins can view all users and create new ones via an Add dialog"
+  - ✅ "Creating a user automatically assigns a leave balance for each active leave type"
+  - ❌ "Added UserService.CreateAsync with single SaveChangesAsync and 10 unit tests"
 - commit the work. Run `Skill('git-commit')` to commit the work.
 
-### 5. Report QA
+### 5. Reporting
 
-Write a list of items the user should test to verify the work.
+After the work is committed (or skipped via `--skip-commit`), report back to the user with two sections:
+
+**QA checklist** — concrete, user-facing items the user should manually verify. One bullet per behavior, phrased as an action the user takes:
+- ✅ "Log in as admin → open Users page → click Add → submit form → new user appears in list"
+- ❌ "Verify UserService works"
+
+**Lessons for CLAUDE.md** — surprises, gotchas, or conventions discovered during the work that future runs should know. Keep each point tight and rule-shaped:
+- A missing convention you had to infer (e.g. "API error responses use `{ code, message }`, not RFC 7807")
+- A pattern that wasted time and shouldn't next time
+- A non-obvious constraint in the codebase
+- Adjustments or simplifications performed with `/simplify`
+Make each item brief and precise. Focus on guidance a future agent should apply to prevent repeated errors or wasted time.
+ 
